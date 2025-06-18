@@ -1,4 +1,3 @@
 package com.deto.staystrong.model
 
-class LoginResponse {
-}
+data class LoginResponse(val token: String, val user: User)
