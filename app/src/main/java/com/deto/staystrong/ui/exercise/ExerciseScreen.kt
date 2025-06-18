@@ -1,4 +1,4 @@
-package com.deto.staystrong.ui.theme.exercise
+package com.deto.staystrong.ui.exercise
 
 import androidx.compose.runtime.Composable
 
