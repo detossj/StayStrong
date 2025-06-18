@@ -1,4 +1,4 @@
-package com.deto.staystrong.data.remote
+package com.deto.staystrong.data.remote.services
 
 import com.deto.staystrong.model.LoginRequest
 import com.deto.staystrong.model.LoginResponse

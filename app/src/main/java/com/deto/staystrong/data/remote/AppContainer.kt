@@ -1,4 +1,4 @@
-package com.deto.staystrong.data
+package com.deto.staystrong.data.remote
 
 import android.content.Context
 
