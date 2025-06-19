@@ -3,7 +3,10 @@ package com.deto.staystrong.ui.theme.exercise
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,7 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
-import androidx.compose.runtime.* // Importante para MutableState y mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -44,15 +47,34 @@ data class ExerciseData(
     val id: String = UUID.randomUUID().toString(),
     val name: String,
     val sets: MutableList<SetEntry> = mutableStateListOf(),
-    val isExpanded: MutableState<Boolean> = mutableStateOf(false) // <--- ¡CAMBIO AQUÍ!
+    val isExpanded: MutableState<Boolean> = mutableStateOf(false)
 )
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+data class PredefinedExercise(
+    val name: String,
+    var isSelected: MutableState<Boolean> = mutableStateOf(false)
+)
+
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class,
+    ExperimentalLayoutApi::class
+)
 @Composable
 fun ExerciseScreen(modifier: Modifier = Modifier) {
     val exercises = remember { mutableStateListOf<ExerciseData>() }
-    var newExerciseNameInput by remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    val predefinedExercises = remember {
+        mutableStateListOf(
+            PredefinedExercise("Press Banca"),
+            PredefinedExercise("Sentadilla"),
+            PredefinedExercise("Peso Muerto"),
+            PredefinedExercise("Remo con Barra")
+        )
+    }
+
+    // Nuevo estado para controlar la visibilidad de la lista de selección
+    var showPredefinedExerciseList by remember { mutableStateOf(false) }
 
     var isRunning by remember { mutableStateOf(true) }
     val startTime = remember { System.currentTimeMillis() }
@@ -111,60 +133,85 @@ fun ExerciseScreen(modifier: Modifier = Modifier) {
                 SummaryBox("Sets", "$totalSets", Color.LightGray)
             }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            // Botón para mostrar/ocultar la lista de ejercicios predefinidos
+            Button(
+                onClick = { showPredefinedExerciseList = !showPredefinedExerciseList },
+                modifier = Modifier.fillMaxWidth()
             ) {
-                OutlinedTextField(
-                    value = newExerciseNameInput,
-                    onValueChange = { newExerciseNameInput = it },
-                    label = { Text("Añadir nuevo ejercicio...", color = Color.White) },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = {
-                        keyboardController?.hide()
-                        if (newExerciseNameInput.isNotBlank()) {
-                            exercises.add(
-                                ExerciseData(
-                                    name = newExerciseNameInput.trim(),
-                                    isExpanded = mutableStateOf(true), // <--- ¡CAMBIO AQUÍ!
-                                    sets = mutableStateListOf(SetEntry(), SetEntry(), SetEntry())
-                                )
-                            )
-                            newExerciseNameInput = ""
-                        }
-                    }),
-                    modifier = Modifier.weight(1f),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFF00FFAA),
-                        unfocusedBorderColor = Color.Gray,
-                        cursorColor = Color.White,
-                        focusedLabelColor = Color.White,
-                        unfocusedLabelColor = Color.Gray,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.LightGray
-                    )
-                )
-                Button(
-                    onClick = {
-                        keyboardController?.hide()
-                        if (newExerciseNameInput.isNotBlank()) {
-                            exercises.add(
-                                ExerciseData(
-                                    name = newExerciseNameInput.trim(),
-                                    isExpanded = mutableStateOf(true), // <--- ¡CAMBIO AQUÍ!
-                                    sets = mutableStateListOf(SetEntry(), SetEntry(), SetEntry())
-                                )
-                            )
-                            newExerciseNameInput = ""
-                        }
-                    },
-                    enabled = newExerciseNameInput.isNotBlank()
+                Icon(Icons.Filled.Add, contentDescription = "Añadir Ejercicio")
+                Spacer(Modifier.width(8.dp))
+                Text("Añadir Ejercicio")
+            }
+
+            // Lista de ejercicios predefinidos y botón de añadir, ahora dentro de AnimatedVisibility
+            AnimatedVisibility(
+                visible = showPredefinedExerciseList,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp, bottom = 8.dp)
+                        .background(Color(0xFF2C2C2E), RoundedCornerShape(8.dp)) // Fondo para la lista
+                        .padding(12.dp)
                 ) {
-                    Icon(Icons.Filled.Add, contentDescription = "Añadir Ejercicio")
+                    Text(
+                        "Selecciona ejercicios:",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = Color.White,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    FlowRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        predefinedExercises.forEach { predefinedExercise ->
+                            val backgroundColor = if (predefinedExercise.isSelected.value) Color(0xFF00FFAA) else Color(0xFF333335)
+                            val textColor = if (predefinedExercise.isSelected.value) Color.Black else Color.White
+                            Text(
+                                text = predefinedExercise.name,
+                                color = textColor,
+                                modifier = Modifier
+                                    .background(backgroundColor, RoundedCornerShape(8.dp))
+                                    .border(1.dp, Color(0xFF00FFAA), RoundedCornerShape(8.dp))
+                                    .clickable { predefinedExercise.isSelected.value = !predefinedExercise.isSelected.value }
+                                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        onClick = {
+                            val selectedExercisesToAdd = predefinedExercises.filter { it.isSelected.value }
+                            selectedExercisesToAdd.forEach { selected ->
+                                // Comprobar si el ejercicio ya existe en la lista para evitar duplicados
+                                if (exercises.none { it.name == selected.name }) {
+                                    exercises.add(
+                                        ExerciseData(
+                                            name = selected.name,
+                                            isExpanded = mutableStateOf(true),
+                                            sets = mutableStateListOf(SetEntry(), SetEntry(), SetEntry())
+                                        )
+                                    )
+                                }
+                                selected.isSelected.value = false // Deseleccionar después de añadir
+                            }
+                            showPredefinedExerciseList = false // Ocultar la lista después de añadir
+                        },
+                        enabled = predefinedExercises.any { it.isSelected.value },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Icon(Icons.Filled.Add, contentDescription = "Añadir Seleccionados")
+                        Spacer(Modifier.width(8.dp))
+                        Text("Añadir Seleccionados")
+                    }
                 }
             }
+            // --- Fin de AnimatedVisibility ---
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -182,7 +229,7 @@ fun ExerciseScreen(modifier: Modifier = Modifier) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .clickable { exercise.isExpanded.value = !exercise.isExpanded.value } // <--- ¡CAMBIO AQUÍ!
+                                    .clickable { exercise.isExpanded.value = !exercise.isExpanded.value }
                                     .padding(vertical = 4.dp),
                                 contentAlignment = Alignment.CenterStart
                             ) {
@@ -208,7 +255,7 @@ fun ExerciseScreen(modifier: Modifier = Modifier) {
                             }
 
                             AnimatedVisibility(
-                                visible = exercise.isExpanded.value, // <--- ¡CAMBIO AQUÍ!
+                                visible = exercise.isExpanded.value,
                                 enter = expandVertically(),
                                 exit = shrinkVertically()
                             ) {
@@ -244,10 +291,6 @@ fun SummaryBox(title: String, value: String, valueColor: Color) {
     }
 }
 
-
-// =========================================================
-// ExerciseDetailsContent Composable (antes ExerciseBlock)
-// =========================================================
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
