@@ -41,11 +41,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.deto.staystrong.R
+import com.deto.staystrong.ui.AppViewModelProvider
 
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -97,9 +100,7 @@ fun LoginScreen() {
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Default.Email, contentDescription = "Email")
-                },
+                leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = "Email")},
                 placeholder = { Text("Correo Electronico") },
                 shape = RoundedCornerShape(50),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -114,9 +115,7 @@ fun LoginScreen() {
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Default.Lock, contentDescription = "Contraseña")
-                },
+                leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = "Contraseña") },
                 placeholder = { Text("Contraseña") },
                 visualTransformation = PasswordVisualTransformation(),
                 shape = RoundedCornerShape(50),
