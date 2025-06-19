@@ -34,7 +34,7 @@ fun Navigation() {
             AuthManager(navController = navController)
         }
         composable<Login> {
-            LoginScreen(navController = navController)
+            LoginScreen()
         }
         composable<Register> {
 
