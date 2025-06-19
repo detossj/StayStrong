@@ -1,4 +1,7 @@
 package com.deto.staystrong.ui.routine
 
-class RoutinesScreen {
+import androidx.compose.runtime.Composable
+
+@Composable
+fun RoutinesScreen (){
 }
