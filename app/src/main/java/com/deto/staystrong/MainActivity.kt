@@ -33,6 +33,3 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-// Puedes eliminar la función Greeting y GreetingPreview si ya no las necesitas,
-// ya que el foco ahora está en ExerciseSketchScreen.
-// Si las necesitas para otros propósitos, déjalas, pero no son llamadas aquí.
