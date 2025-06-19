@@ -33,9 +33,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import com.deto.staystrong.ui.AppViewModelProvider
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavHostController, viewModel: AuthViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
