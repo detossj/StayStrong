@@ -1,4 +1,4 @@
-package com.deto.staystrong.data.remo
+package com.deto.staystrong.data
 import androidx.room.PrimaryKey
 
 
