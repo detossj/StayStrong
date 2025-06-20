@@ -75,7 +75,6 @@ class AuthViewModel(
 
     fun logout() {
 
-
         viewModelScope.launch {
             try {
                 val token = TokenManager.getToken(context)
@@ -93,7 +92,6 @@ class AuthViewModel(
 
     private fun isLoggedIn() {
         viewModelScope.launch {
-            authState = AuthUiState.Loading
             try {
 //                val token = TokenManager.getToken(context)
 //                if (token != null) {
@@ -106,7 +104,7 @@ class AuthViewModel(
 //                    authState = AuthUiState.loggedIn(false)
 //                }
 
-                val response = authService.getUser() // Llamada a /profile
+                val response = authService.getUser();
                 authState = AuthUiState.loggedIn(true)
             } catch (e: Exception) {
                 authState = AuthUiState.loggedIn(false)
