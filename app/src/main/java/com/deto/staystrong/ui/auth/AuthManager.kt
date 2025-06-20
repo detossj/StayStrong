@@ -7,11 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.deto.staystrong.AuthManager
-import com.deto.staystrong.Exercise
 import com.deto.staystrong.Login
+import com.deto.staystrong.Routine
 import com.deto.staystrong.ui.AppViewModelProvider
 
 @Composable
@@ -22,7 +23,7 @@ fun AuthManager(navController: NavHostController, viewModel: AuthViewModel = vie
         when (authState) {
             is AuthUiState.loggedIn -> {
                 if (authState.logged) {
-                    navController.navigate(Exercise) {
+                    navController.navigate(Routine) {
                         popUpTo(AuthManager) {
                             inclusive = true
                         } // Quitar la pantalla de la pila de navegación
@@ -40,6 +41,8 @@ fun AuthManager(navController: NavHostController, viewModel: AuthViewModel = vie
         }
     }
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(
+            color = Color.Black
+        )
     }
 }
