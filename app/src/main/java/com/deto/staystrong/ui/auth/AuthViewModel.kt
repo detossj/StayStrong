@@ -52,7 +52,7 @@ class AuthViewModel(
         }
     }
 
-    fun register(name: String, email: String, password: String) {
+    fun register(name: String, email: String, password: String, validationPassword: String) {
 
         viewModelScope.launch {
 
@@ -60,7 +60,7 @@ class AuthViewModel(
 
             try {
 
-                val response = authService.register(RegisterRequest( name, email, password, password ))
+                val response = authService.register(RegisterRequest( name, email, password, validationPassword ))
                 TokenManager.saveToken(context, response.token)
                 authState = AuthUiState.Success(response.token)
 
@@ -95,17 +95,19 @@ class AuthViewModel(
         viewModelScope.launch {
             authState = AuthUiState.Loading
             try {
-                val token = TokenManager.getToken(context)
-                if (token != null) {
-                    // Opción rápida: Confiar en el token local ( funciona para login persistente )
-                    authState = AuthUiState.loggedIn(true)
+//                val token = TokenManager.getToken(context)
+//                if (token != null) {
+//                    // Opción rápida: Confiar en el token local ( funciona para login persistente )
+//                    authState = AuthUiState.loggedIn(true)
+//
+//
+//
+//                } else {
+//                    authState = AuthUiState.loggedIn(false)
+//                }
 
-                    // Opción segura: Validar token con el backend
-                    // val response = authService.getUser() // Llamada a /profile
-                    // authState = AuthUiState.loggedIn(true)
-                } else {
-                    authState = AuthUiState.loggedIn(false)
-                }
+                val response = authService.getUser() // Llamada a /profile
+                authState = AuthUiState.loggedIn(true)
             } catch (e: Exception) {
                 authState = AuthUiState.loggedIn(false)
             }
