@@ -48,7 +48,7 @@ fun Navigation() {
             RegisterScreen(navController = navController)
         }
         composable<Routine> {
-            RoutinesScreen()
+            RoutinesScreen(navController = navController)
         }
         composable<Exercise> {
 
