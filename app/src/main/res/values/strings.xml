@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">Stay Strong</string>
+    <string name="login_placeholder_email">Correo electrónico</string>
+    <string name="login_error_email">El correo no es válido</string>
+    <string name="login_placeholder_password">Contraseña</string>
+    <string name="login_error_password">La contraseña no es válida</string>
+    <string name="login_auth_successful">Sesión iniciada correctamente</string>
+    <string name="login_button_text">Iniciar sesión</string>
+    <string name="login_title">Iniciar sesión</string>
+    <string name="register_title">Registrarse</string>
+    <string name="register_placeholder_email">Correo electrónico</string>
+    <string name="register_error_email">El correo no es válido</string>
+    <string name="register_placeholder_password">Contraseña</string>
+    <string name="register_error_password">La contraseña no es válida</string>
+    <string name="register_error_name">La nombre no es válido</string>
+    <string name="register_placeholder_name">Nombre</string>
+    <string name="register_button_text">Registrarse</string>
+    <string name="register_auth_successful">Registrado correctamente</string>
+    <string name="login_bottom_text">¿Aún no tienes una cuenta?</string>
+    <string name="login_bottom_textbutton">Únete aquí</string>
+
 </resources>
