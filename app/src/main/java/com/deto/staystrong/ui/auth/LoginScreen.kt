@@ -37,10 +37,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.deto.staystrong.Exercise
 import com.deto.staystrong.Login
 import com.deto.staystrong.R
 import com.deto.staystrong.Register
+import com.deto.staystrong.Routine
 import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.ui.components.CustomButtonLoginAndRegister
 import com.deto.staystrong.ui.components.CustomOutlinedTextFieldLoginAndRegister
@@ -59,7 +59,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
 
     LaunchedEffect(authState) {
         if (authState is AuthUiState.Success) {
-            navController.navigate(Exercise) {
+            navController.navigate(Routine) {
                 popUpTo(Login) { inclusive = true }
             }
         }
@@ -79,7 +79,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.3f))
+                .background(Color.White.copy(alpha = 0.1f))
         )
 
         Column(

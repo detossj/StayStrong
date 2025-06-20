@@ -33,8 +33,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.deto.staystrong.Exercise
 import com.deto.staystrong.Login
+import com.deto.staystrong.Routine
 import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.ui.components.CustomButtonLoginAndRegister
 import com.deto.staystrong.ui.components.CustomOutlinedTextFieldLoginAndRegister
@@ -56,7 +56,7 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel = view
 
     LaunchedEffect(authState) {
         if (authState is AuthUiState.Success) {
-            navController.navigate(Exercise) {
+            navController.navigate(Routine) {
                 popUpTo(Login) { inclusive = true }
             }
         }
@@ -75,7 +75,7 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel = view
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.4f))
+                .background(Color.White.copy(alpha = 0.1f))
         )
 
         Column(
