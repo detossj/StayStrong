@@ -5,7 +5,10 @@ import android.widget.CalendarView
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,23 +17,35 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.deto.staystrong.R
+import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.ui.components.CustomTopAppBar
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import com.deto.staystrong.R
+import com.deto.staystrong.ui.components.CustomFloatingActionButton
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun RoutinesScreen(navController: NavController) {
+fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+
+    LaunchedEffect(Unit) {
+        viewModel.refreshRoutines()
+    }
+
+    val uiState = viewModel.routinesUiState
+
+    var selected by remember { mutableIntStateOf(0) }
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     val showCalendarDialog = remember { mutableStateOf(false) }
 
@@ -47,16 +62,7 @@ fun RoutinesScreen(navController: NavController) {
             CustomTopAppBar(navController = navController)
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { /* Botón agregar Ejercicio */ },
-                containerColor = Color.Gray,
-                contentColor = Color.White
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Agregar"
-                )
-            }
+            CustomFloatingActionButton({ viewModel.addRoutine(selectedDate)})
         }
     ) { innerPadding ->
         Box(
@@ -64,8 +70,20 @@ fun RoutinesScreen(navController: NavController) {
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            Image(
+                painter = painterResource(id = R.drawable.routine),
+                contentDescription = "Fondo",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
 
-            // Barra de fecha y flechas como la tenías antes
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White.copy(alpha = 0.1f))
+            )
+
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -112,12 +130,74 @@ fun RoutinesScreen(navController: NavController) {
                     }
                 }
 
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(2.dp)
-                        .background(Color.White)
-                )
+                Column(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxHeight()
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    when (uiState) {
+                        is RoutinesUiState.Loading -> {
+                            Text(text = "Cargando rutinas...")
+                        }
+
+                        is RoutinesUiState.Error -> {
+                            Text(text = "Error: ${uiState.message}")
+                        }
+
+                        is RoutinesUiState.Success -> {
+                            val routines = uiState.routines
+
+                            // Filtrar solo para la fecha seleccionada
+                            val filteredRoutines = routines.filter { routine ->
+                                routine.date.startsWith(selectedDate.toString())
+                            }
+
+                            LazyVerticalGrid(
+                                columns = GridCells.Fixed(1),
+                                contentPadding = PaddingValues(10.dp),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                items(filteredRoutines.size) { index ->
+
+                                    val routine = filteredRoutines[index]
+
+                                    Card(
+                                        modifier = Modifier
+                                            .padding(20.dp)
+                                            .clickable { selected = routine.id },
+                                        colors = CardColors(
+                                            contentColor = Color.Black,
+                                            containerColor = Color.White,
+                                            disabledContentColor = Color.White,
+                                            disabledContainerColor = Color.Transparent
+                                        ),
+                                        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                                        shape = RoundedCornerShape(16.dp),
+                                    ) {
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .fillMaxHeight()
+                                                .padding(horizontal = 20.dp, vertical = 35.dp),
+                                            verticalArrangement = Arrangement.Center,
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
+
+                                            Text(text = "Rutina ${index + 1}")
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        else -> {}
+
+                    }
+                }
             }
         }
     }
