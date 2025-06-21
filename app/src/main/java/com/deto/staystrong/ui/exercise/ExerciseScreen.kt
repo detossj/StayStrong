@@ -1,5 +1,7 @@
+// ui/theme/exercise/ExerciseScreen.kt
 package com.deto.staystrong.ui.theme.exercise
 
+import android.app.Application
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -16,6 +18,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -23,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -30,51 +34,34 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.deto.staystrong.ExerciseDataUI
+import com.deto.staystrong.ExerciseViewModel
+import com.deto.staystrong.PredefinedExercise // Importar el PredefinedExercise del ViewModel
+import com.deto.staystrong.SetEntryUI
 import kotlinx.coroutines.delay
-import java.util.UUID
-
-// =========================================================
-data class SetEntry(
-    val id: String = UUID.randomUUID().toString(),
-    var kg: String = "",
-    var reps: String = "",
-    var isCompleted: Boolean = false,
-    var restTime: Int = 210,
-    var isResting: Boolean = false
-)
-
-data class ExerciseData(
-    val id: String = UUID.randomUUID().toString(),
-    val name: String,
-    val sets: MutableList<SetEntry> = mutableStateListOf(),
-    val isExpanded: MutableState<Boolean> = mutableStateOf(false)
-)
-
-data class PredefinedExercise(
-    val name: String,
-    var isSelected: MutableState<Boolean> = mutableStateOf(false)
-)
-
+// No necesitamos java.util.UUID aquí si ya lo manejamos en los data classes de UI
+// import java.util.UUID // <-- Eliminar esta línea si no se usa directamente
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class,
     ExperimentalLayoutApi::class
 )
 @Composable
 fun ExerciseScreen(modifier: Modifier = Modifier) {
-    val exercises = remember { mutableStateListOf<ExerciseData>() }
+    val context = LocalContext.current.applicationContext
+    val viewModel: ExerciseViewModel = viewModel(factory = ExerciseViewModel.Factory(context as Application))
+
+    val exercises by viewModel.exercises.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val predefinedExercises = remember {
-        mutableStateListOf(
-            PredefinedExercise("Press Banca"),
-            PredefinedExercise("Sentadilla"),
-            PredefinedExercise("Peso Muerto"),
-            PredefinedExercise("Remo con Barra")
-        )
-    }
+    // Observar las categorías disponibles desde el ViewModel
+    val availableCategories by viewModel.availableCategories.collectAsState()
+    // Observar la lista filtrada de ejercicios predefinidos
+    val predefinedExercisesFiltered by viewModel.predefinedExercisesFiltered.collectAsState()
 
-    // Nuevo estado para controlar la visibilidad de la lista de selección
     var showPredefinedExerciseList by remember { mutableStateOf(false) }
+    var selectedCategoryFilter by remember { mutableStateOf("Todos") } // Estado local para el filtro seleccionado en la UI
+    var expandedCategoryFilter by remember { mutableStateOf(false) } // Para el DropdownMenu
 
     var isRunning by remember { mutableStateOf(true) }
     val startTime = remember { System.currentTimeMillis() }
@@ -162,21 +149,61 @@ fun ExerciseScreen(modifier: Modifier = Modifier) {
                         color = Color.White,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
+
+                    // Filtro de Categorías (DropdownMenu)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp)
+                            .background(Color.DarkGray, RoundedCornerShape(8.dp))
+                            .clickable { expandedCategoryFilter = true }
+                            .padding(horizontal = 12.dp, vertical = 8.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(text = "Filtrar por: $selectedCategoryFilter", color = Color.White)
+                            Icon(Icons.Filled.ArrowDropDown, contentDescription = "Filtrar categoría", tint = Color.White)
+                        }
+                        DropdownMenu(
+                            expanded = expandedCategoryFilter,
+                            onDismissRequest = { expandedCategoryFilter = false },
+                            modifier = Modifier.fillMaxWidth(0.9f) // Ajusta el ancho
+                                .background(Color(0xFF2C2C2E), RoundedCornerShape(8.dp))
+                        ) {
+                            availableCategories.forEach { category ->
+                                DropdownMenuItem(
+                                    text = { Text(category, color = Color.White) },
+                                    onClick = {
+                                        selectedCategoryFilter = category
+                                        viewModel.setSelectedCategoryFilter(category) // Actualizar el filtro en ViewModel
+                                        expandedCategoryFilter = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+
                     FlowRow(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        predefinedExercises.forEach { predefinedExercise ->
-                            val backgroundColor = if (predefinedExercise.isSelected.value) Color(0xFF00FFAA) else Color(0xFF333335)
-                            val textColor = if (predefinedExercise.isSelected.value) Color.Black else Color.White
+                        predefinedExercisesFiltered.forEach { predefinedExercise -> // Usar la lista filtrada
+                            // Observar el estado de selección de cada PredefinedExercise
+                            val isSelected by predefinedExercise.isSelected.collectAsState()
+                            val backgroundColor = if (isSelected) Color(0xFF00FFAA) else Color(0xFF333335)
+                            val textColor = if (isSelected) Color.Black else Color.White
                             Text(
                                 text = predefinedExercise.name,
                                 color = textColor,
                                 modifier = Modifier
                                     .background(backgroundColor, RoundedCornerShape(8.dp))
                                     .border(1.dp, Color(0xFF00FFAA), RoundedCornerShape(8.dp))
-                                    .clickable { predefinedExercise.isSelected.value = !predefinedExercise.isSelected.value }
+                                    .clickable { predefinedExercise.isSelected.value = !predefinedExercise.isSelected.value } // Toggle isSelected
                                     .padding(horizontal = 12.dp, vertical = 8.dp)
                             )
                         }
@@ -186,23 +213,14 @@ fun ExerciseScreen(modifier: Modifier = Modifier) {
 
                     Button(
                         onClick = {
-                            val selectedExercisesToAdd = predefinedExercises.filter { it.isSelected.value }
+                            val selectedExercisesToAdd = predefinedExercisesFiltered.filter { it.isSelected.value }
                             selectedExercisesToAdd.forEach { selected ->
-                                // Comprobar si el ejercicio ya existe en la lista para evitar duplicados
-                                if (exercises.none { it.name == selected.name }) {
-                                    exercises.add(
-                                        ExerciseData(
-                                            name = selected.name,
-                                            isExpanded = mutableStateOf(true),
-                                            sets = mutableStateListOf(SetEntry(), SetEntry(), SetEntry())
-                                        )
-                                    )
-                                }
+                                viewModel.addExerciseToRoutine(selected.name, selected.category) // Pasar la categoría
                                 selected.isSelected.value = false // Deseleccionar después de añadir
                             }
                             showPredefinedExerciseList = false // Ocultar la lista después de añadir
                         },
-                        enabled = predefinedExercises.any { it.isSelected.value },
+                        enabled = predefinedExercisesFiltered.any { it.isSelected.value }, // Habilitar si hay alguno seleccionado
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Icon(Icons.Filled.Add, contentDescription = "Añadir Seleccionados")
@@ -211,7 +229,6 @@ fun ExerciseScreen(modifier: Modifier = Modifier) {
                     }
                 }
             }
-            // --- Fin de AnimatedVisibility ---
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -229,7 +246,7 @@ fun ExerciseScreen(modifier: Modifier = Modifier) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .clickable { exercise.isExpanded.value = !exercise.isExpanded.value }
+                                    .clickable { viewModel.toggleExerciseExpansion(exercise) }
                                     .padding(vertical = 4.dp),
                                 contentAlignment = Alignment.CenterStart
                             ) {
@@ -244,7 +261,7 @@ fun ExerciseScreen(modifier: Modifier = Modifier) {
                                         color = Color.White,
                                         modifier = Modifier.weight(1f)
                                     )
-                                    IconButton(onClick = { exercises.remove(exercise) }) {
+                                    IconButton(onClick = { viewModel.removeExercise(exercise) }) {
                                         Icon(
                                             Icons.Filled.Delete,
                                             contentDescription = "Eliminar Ejercicio",
@@ -255,18 +272,15 @@ fun ExerciseScreen(modifier: Modifier = Modifier) {
                             }
 
                             AnimatedVisibility(
-                                visible = exercise.isExpanded.value,
+                                visible = exercise.isExpanded,
                                 enter = expandVertically(),
                                 exit = shrinkVertically()
                             ) {
                                 ExerciseDetailsContent(
                                     exercise = exercise,
-                                    onAddSet = { exercise.sets.add(SetEntry()) },
-                                    onUpdateSet = { updatedSet ->
-                                        val idx = exercise.sets.indexOfFirst { it.id == updatedSet.id }
-                                        if (idx != -1) exercise.sets[idx] = updatedSet
-                                    },
-                                    onDeleteSet = { id -> exercise.sets.removeIf { it.id == id } }
+                                    onAddSet = { viewModel.addSet(exercise) },
+                                    onUpdateSet = { updatedSet -> viewModel.updateSet(exercise, updatedSet) },
+                                    onDeleteSet = { setId -> viewModel.deleteSet(exercise, setId) }
                                 )
                             }
                         }
@@ -295,25 +309,34 @@ fun SummaryBox(title: String, value: String, valueColor: Color) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExerciseDetailsContent(
-    exercise: ExerciseData,
+    exercise: ExerciseDataUI,
     onAddSet: () -> Unit,
-    onUpdateSet: (SetEntry) -> Unit,
+    onUpdateSet: (SetEntryUI) -> Unit,
     onDeleteSet: (String) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = "Notas...",
-            style = MaterialTheme.typography.bodySmall,
-            color = Color.Gray,
-            modifier = Modifier.padding(top = 8.dp)
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp, bottom = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Notas...",
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.Gray,
+                modifier = Modifier.weight(1f)
+            )
 
-        Text(
-            text = "Temporizador de descanso: 3min 30s",
-            style = MaterialTheme.typography.bodySmall,
-            color = Color(0xFF00FFAA),
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
+            if (exercise.sets.isNotEmpty()) {
+                Text(
+                    text = "Tiempo de descanso predefinido: ${exercise.sets[0].restTime / 60}min ${exercise.sets[0].restTime % 60}s",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color(0xFF00FFAA),
+                )
+            }
+        }
 
         Row(
             modifier = Modifier
@@ -357,125 +380,251 @@ fun ExerciseDetailsContent(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun SetRow(
     setNumber: Int,
-    setEntry: SetEntry,
-    onUpdate: (SetEntry) -> Unit,
+    setEntry: SetEntryUI,
+    onUpdate: (SetEntryUI) -> Unit,
     onDelete: (String) -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = setNumber.toString(),
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            modifier = Modifier.weight(0.1f)
-        )
-        Text(
-            text = "70kg x 8",
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.Gray,
-            modifier = Modifier.weight(0.2f)
-        )
-        OutlinedTextField(
-            value = setEntry.kg,
-            onValueChange = { newValue: String ->
-                onUpdate(setEntry.copy(kg = newValue))
-            },
+    LaunchedEffect(setEntry.isResting) {
+        if (setEntry.isResting) {
+            var countdown = setEntry.restTime
+            onUpdate(setEntry.copy(currentRestTime = countdown))
+            while (countdown > 0) {
+                delay(1000L)
+                countdown--
+                onUpdate(setEntry.copy(currentRestTime = countdown))
+            }
+            onUpdate(setEntry.copy(isResting = false))
+        }
+    }
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
             modifier = Modifier
-                .weight(0.25f)
-                .height(48.dp),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = { keyboardController?.hide() }
-            ),
-            singleLine = true,
-            textStyle = LocalTextStyle.current.copy(
-                fontSize = 14.sp,
-                textAlign = TextAlign.Center,
-                color = Color.White
-            ),
-            shape = RoundedCornerShape(4.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF00FFAA),
-                unfocusedBorderColor = Color.DarkGray,
-                cursorColor = Color.White,
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.LightGray,
-                disabledTextColor = Color.Gray,
-                errorTextColor = Color.Red,
-            )
-        )
-
-        Spacer(modifier = Modifier.width(8.dp))
-        OutlinedTextField(
-            value = setEntry.reps,
-            onValueChange = { newValue: String ->
-                onUpdate(setEntry.copy(reps = newValue))
-            },
-            modifier = Modifier
-                .weight(0.25f)
-                .height(48.dp),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = { keyboardController?.hide() }
-            ),
-            singleLine = true,
-            textStyle = LocalTextStyle.current.copy(
-                fontSize = 14.sp,
-                textAlign = TextAlign.Center,
-                color = Color.White
-            ),
-            shape = RoundedCornerShape(4.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF00FFAA),
-                unfocusedBorderColor = Color.DarkGray,
-                cursorColor = Color.White,
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.LightGray,
-                disabledTextColor = Color.Gray,
-                errorTextColor = Color.Red,
-            )
-        )
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-        Checkbox(
-            checked = setEntry.isCompleted,
-            onCheckedChange = { isChecked ->
-                onUpdate(setEntry.copy(isCompleted = isChecked))
-            },
-            colors = CheckboxDefaults.colors(
-                checkedColor = Color(0xFF00FFAA),
-                uncheckedColor = Color.DarkGray,
-                checkmarkColor = Color.Black
-            ),
-            modifier = Modifier
-                .weight(0.1f)
-                .size(24.dp)
-        )
-
-        IconButton(
-            onClick = { onDelete(setEntry.id) },
-            modifier = Modifier.size(24.dp)
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Icon(Icons.Filled.Delete, contentDescription = "Eliminar set", tint = Color.Red)
+            Text(
+                text = setNumber.toString(),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                modifier = Modifier.weight(0.1f)
+            )
+            Text(
+                text = "70kg x 8", // Placeholder for previous
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray,
+                modifier = Modifier.weight(0.2f)
+            )
+            OutlinedTextField(
+                value = setEntry.kg,
+                onValueChange = { newValue: String ->
+                    onUpdate(setEntry.copy(kg = newValue))
+                },
+                modifier = Modifier
+                    .weight(0.25f)
+                    .height(48.dp),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { keyboardController?.hide() }
+                ),
+                singleLine = true,
+                textStyle = LocalTextStyle.current.copy(
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    color = Color.White
+                ),
+                shape = RoundedCornerShape(4.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFF00FFAA),
+                    unfocusedBorderColor = Color.DarkGray,
+                    cursorColor = Color.White,
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.LightGray,
+                    disabledTextColor = Color.Gray,
+                    errorTextColor = Color.Red,
+                )
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+            OutlinedTextField(
+                value = setEntry.reps,
+                onValueChange = { newValue: String ->
+                    onUpdate(setEntry.copy(reps = newValue))
+                },
+                modifier = Modifier
+                    .weight(0.25f)
+                    .height(48.dp),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { keyboardController?.hide() }
+                ),
+                singleLine = true,
+                textStyle = LocalTextStyle.current.copy(
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    color = Color.White
+                ),
+                shape = RoundedCornerShape(4.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFF00FFAA),
+                    unfocusedBorderColor = Color.DarkGray,
+                    cursorColor = Color.White,
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.LightGray,
+                    disabledTextColor = Color.Gray,
+                    errorTextColor = Color.Red,
+                )
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Checkbox(
+                checked = setEntry.isCompleted,
+                onCheckedChange = { isChecked ->
+                    onUpdate(setEntry.copy(isCompleted = isChecked, isResting = isChecked))
+                },
+                colors = CheckboxDefaults.colors(
+                    checkedColor = Color(0xFF00FFAA),
+                    uncheckedColor = Color.DarkGray,
+                    checkmarkColor = Color.Black
+                ),
+                modifier = Modifier
+                    .weight(0.1f)
+                    .size(24.dp)
+            )
+
+            IconButton(
+                onClick = { onDelete(setEntry.id) },
+                modifier = Modifier.size(24.dp)
+            ) {
+                Icon(Icons.Filled.Delete, contentDescription = "Eliminar set", tint = Color.Red)
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            val minutes = setEntry.currentRestTime / 60
+            val seconds = setEntry.currentRestTime % 60
+            val restTimeDisplay = String.format("%02d:%02d", minutes, seconds)
+
+            Text(
+                text = if (setEntry.isResting) "Descanso: $restTimeDisplay" else "Descanso predefinido: ${setEntry.restTime / 60}min ${setEntry.restTime % 60}s",
+                style = MaterialTheme.typography.bodySmall,
+                color = if (setEntry.isResting) Color(0xFF00FFAA) else Color.Gray,
+                modifier = Modifier.weight(1f)
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Button(
+                onClick = {
+                    onUpdate(setEntry.copy(isResting = !setEntry.isResting))
+                },
+                modifier = Modifier.wrapContentWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (setEntry.isResting) Color.Red else Color(0xFF00FFAA)
+                )
+            ) {
+                Text(if (setEntry.isResting) "Detener" else "Iniciar Descanso", color = Color.Black)
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Button(
+                onClick = {
+                    onUpdate(setEntry.copy(showRestTimePicker = true))
+                },
+                modifier = Modifier.wrapContentWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
+            ) {
+                Text("Establecer", color = Color.White)
+            }
+        }
+
+        if (setEntry.showRestTimePicker) {
+            RestTimePickerDialog(
+                initialRestTime = setEntry.restTime,
+                onDismiss = {
+                    onUpdate(setEntry.copy(showRestTimePicker = false))
+                },
+                onConfirm = { newRestTimeInSeconds ->
+                    onUpdate(setEntry.copy(restTime = newRestTimeInSeconds, showRestTimePicker = false))
+                }
+            )
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RestTimePickerDialog(
+    initialRestTime: Int,
+    onDismiss: () -> Unit,
+    onConfirm: (Int) -> Unit
+) {
+    val initialMinutes = initialRestTime / 60
+    val initialSeconds = initialRestTime % 60
+
+    val timePickerState = rememberTimePickerState(
+        initialHour = initialMinutes,
+        initialMinute = initialSeconds
+    )
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text("Seleccionar tiempo de descanso", color = Color.White)
+        },
+        text = {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    "Minutos y Segundos:",
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                TimeInput(state = timePickerState)
+            }
+        },
+        confirmButton = {
+            Button(onClick = {
+                val totalSeconds = (timePickerState.hour * 60) + timePickerState.minute
+                onConfirm(totalSeconds)
+            }) {
+                Text("Confirmar")
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text("Cancelar")
+            }
+        },
+        containerColor = Color(0xFF1C1C1E),
+        titleContentColor = Color.White,
+        textContentColor = Color.LightGray
+    )
+}
+
