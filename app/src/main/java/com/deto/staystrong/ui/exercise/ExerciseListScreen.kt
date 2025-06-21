@@ -225,6 +225,7 @@ fun ExpandedMuscleView(muscle: MuscleGroup, onBack: () -> Unit) {
 }
 
 
+
 data class MuscleGroup(
     val id: Int,
     val name: String,
