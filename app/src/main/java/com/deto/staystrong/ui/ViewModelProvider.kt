@@ -6,12 +6,16 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.deto.staystrong.StayStrong
 import com.deto.staystrong.ui.auth.AuthViewModel
+import com.deto.staystrong.ui.routine.RoutinesViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
 
         initializer {
-            AuthViewModel(App().container.authUiState, App().baseContext)
+            AuthViewModel(App().container.authApiService, App().baseContext)
+        }
+        initializer {
+            RoutinesViewModel(App().container.routineApiService)
         }
     }
 }
