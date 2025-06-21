@@ -1,8 +1,8 @@
 package com.deto.staystrong
 
 import android.app.Application
-import com.deto.staystrong.data.remote.AppContainer
-import com.deto.staystrong.data.remote.AppDataContainer
+import com.deto.staystrong.data.AppContainer
+import com.deto.staystrong.data.AppDataContainer
 
 class StayStrong : Application() {
     lateinit var container: AppContainer
