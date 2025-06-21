@@ -6,9 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.deto.staystrong.ui.auth.AuthManager
 import com.deto.staystrong.ui.auth.LoginScreen
 import com.deto.staystrong.ui.auth.RegisterScreen
+import com.deto.staystrong.ui.routine.RoutineScreen
 import com.deto.staystrong.ui.routine.RoutinesScreen
 import kotlinx.serialization.Serializable
 
@@ -23,7 +25,10 @@ object Login
 object Register
 
 @Serializable
-object Routine
+object Routines
+
+@Serializable
+data class Routine(val idRoutine: Int)
 
 @Serializable
 object Exercise
@@ -47,8 +52,12 @@ fun Navigation() {
         composable<Register> {
             RegisterScreen(navController = navController)
         }
-        composable<Routine> {
+        composable<Routines> {
             RoutinesScreen(navController = navController)
+        }
+        composable<Routine> { backStackEntry ->
+            val args = backStackEntry.toRoute<Routine>()
+            RoutineScreen(navController = navController, idRoutine = args.idRoutine)
         }
         composable<Exercise> {
 
