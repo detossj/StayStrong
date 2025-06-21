@@ -31,6 +31,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import com.deto.staystrong.R
+import com.deto.staystrong.Routine
 import com.deto.staystrong.ui.components.CustomFloatingActionButton
 
 
@@ -168,7 +169,10 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
                                     Card(
                                         modifier = Modifier
                                             .padding(20.dp)
-                                            .clickable { selected = routine.id },
+                                            .clickable {
+                                                selected = routine.id
+                                                navController.navigate(Routine(selected))
+                                                       },
                                         colors = CardColors(
                                             contentColor = Color.Black,
                                             containerColor = Color.White,
