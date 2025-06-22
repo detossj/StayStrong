@@ -8,6 +8,7 @@ import com.deto.staystrong.StayStrong
 import com.deto.staystrong.ui.auth.AuthViewModel
 import com.deto.staystrong.ui.exercise.ExerciseViewModel
 import com.deto.staystrong.ui.routine.RoutinesViewModel
+import com.deto.staystrong.ui.routineExercise.RoutineExerciseViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
@@ -20,6 +21,9 @@ object AppViewModelProvider {
         }
         initializer {
             ExerciseViewModel(App().container.exerciseApiService)
+        }
+        initializer {
+            RoutineExerciseViewModel(App().container.routineExerciseApiService)
         }
     }
 }
