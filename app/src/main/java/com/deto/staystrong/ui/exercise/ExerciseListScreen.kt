@@ -1,6 +1,7 @@
 package com.deto.staystrong.ui.exercise
 
 import android.os.Build
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -100,7 +101,7 @@ fun MuscleGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseVie
                 val request = ImageRequest.Builder(context)
                     .data("http://192.168.1.91:8000/${exercise.image_path}")
                     .build()
-                context.imageLoader.enqueue(request) // precarga
+                //context.imageLoader.enqueue(request) // precarga
 
             }
         }
@@ -203,6 +204,10 @@ fun MuscleCard(exercise: Exercise, onClick: () -> Unit) {
 @Composable
 fun ExpandedMuscleView(exercise: Exercise, onBack: () -> Unit) {
 
+    BackHandler {
+        onBack()
+    }
+
     val painter = rememberExerciseImagePainter(exercise.image_path)
     Box(
         modifier = Modifier
@@ -276,24 +281,7 @@ fun ExpandedMuscleView(exercise: Exercise, onBack: () -> Unit) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
-                onClick = { onBack() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White,
-                    contentColor = Color.Black
-                )
-            ) {
-                Text(
-                    text = "← Volver",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
         }
     }
 }
