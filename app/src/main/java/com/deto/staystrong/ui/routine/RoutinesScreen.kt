@@ -32,6 +32,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import com.deto.staystrong.R
 import com.deto.staystrong.Routine
+import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 import com.deto.staystrong.ui.components.CustomFloatingActionButton
 
 
@@ -142,7 +143,7 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
 
                     when (uiState) {
                         is RoutinesUiState.Loading -> {
-                            Text(text = "Cargando rutinas...")
+                            CustomCircularProgressIndicator("rutinas")
                         }
 
                         is RoutinesUiState.Error -> {
@@ -171,7 +172,7 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
                                             .padding(20.dp)
                                             .clickable {
                                                 selected = routine.id
-                                                navController.navigate(Routine(selected))
+                                                navController.navigate(Routine(selected,formattedDate))
                                                        },
                                         colors = CardColors(
                                             contentColor = Color.Black,
