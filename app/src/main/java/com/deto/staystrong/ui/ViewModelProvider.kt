@@ -6,6 +6,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.deto.staystrong.StayStrong
 import com.deto.staystrong.ui.auth.AuthViewModel
+import com.deto.staystrong.ui.exercise.ExerciseViewModel
 import com.deto.staystrong.ui.routine.RoutinesViewModel
 
 object AppViewModelProvider {
@@ -16,6 +17,9 @@ object AppViewModelProvider {
         }
         initializer {
             RoutinesViewModel(App().container.routineApiService)
+        }
+        initializer {
+            ExerciseViewModel(App().container.exerciseApiService)
         }
     }
 }
