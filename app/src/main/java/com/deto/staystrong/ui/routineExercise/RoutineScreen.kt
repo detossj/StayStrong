@@ -1,4 +1,4 @@
-package com.deto.staystrong.ui.routine
+package com.deto.staystrong.ui.routineExercise
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,6 +19,7 @@ import com.deto.staystrong.ExerciseList
 import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.ui.components.CustomFloatingActionButton
 import com.deto.staystrong.ui.components.CustomTopAppBar
+import com.deto.staystrong.ui.routine.RoutinesViewModel
 
 @Composable
 fun RoutineScreen( navController: NavController, idRoutine: Int , viewModel: RoutinesViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
