@@ -8,5 +8,6 @@ data class RoutineExercise(
     val routine_id: Int,
     val exercise_id: Int,
     val order: Int,
+    val exercise: Exercise
 
 )
