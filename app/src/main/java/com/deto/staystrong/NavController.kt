@@ -10,6 +10,7 @@ import androidx.navigation.toRoute
 import com.deto.staystrong.ui.auth.AuthManager
 import com.deto.staystrong.ui.auth.LoginScreen
 import com.deto.staystrong.ui.auth.RegisterScreen
+import com.deto.staystrong.ui.exercise.ExerciseListScreen
 import com.deto.staystrong.ui.routine.RoutineScreen
 import com.deto.staystrong.ui.routine.RoutinesScreen
 import kotlinx.serialization.Serializable
@@ -31,7 +32,7 @@ object Routines
 data class Routine(val idRoutine: Int)
 
 @Serializable
-object Exercise
+object ExerciseList
 
 
 
@@ -59,8 +60,8 @@ fun Navigation() {
             val args = backStackEntry.toRoute<Routine>()
             RoutineScreen(navController = navController, idRoutine = args.idRoutine)
         }
-        composable<Exercise> {
-
+        composable<ExerciseList> {
+            ExerciseListScreen(navController = navController)
         }
     }
 }
