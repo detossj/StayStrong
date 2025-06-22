@@ -1,5 +1,6 @@
 package com.deto.staystrong.ui.exercise
 
+import android.os.Build
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -36,49 +37,80 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import coil.request.CachePolicy
 import androidx.compose.runtime.*
 import androidx.compose.runtime.remember
-import com.deto.staystrong.R
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
+import com.deto.staystrong.ui.AppViewModelProvider
+import com.deto.staystrong.data.Exercise
+import coil.imageLoader
+
+
+
+
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun ExerciseListScreen() {
-    var selectedMuscle by remember { mutableStateOf<MuscleGroup?>(null) }
+fun ExerciseListScreen(navController: NavController) {
+
+
+
+    var selectedExercise by remember { mutableStateOf<Exercise?>(null) }
 
     AnimatedContent(
-        targetState = selectedMuscle,
+        targetState = selectedExercise,
         transitionSpec = {
             fadeIn(tween(300)) + scaleIn(tween(300)) with
                     fadeOut(tween(300)) + scaleOut(tween(300))
         },
-    ) { muscle ->
-        if (muscle == null) {
-            MuscleGridScreen(onMuscleClick = { selectedMuscle = it })
+    ) { exercise ->
+        if (exercise == null) {
+            MuscleGridScreen(onExerciseClick = { selectedExercise = it })
         } else {
             ExpandedMuscleView(
-                muscle = muscle,
-                onBack = { selectedMuscle = null }
+                exercise = exercise,
+                onBack = { selectedExercise = null }
             )
         }
     }
 }
 
 @Composable
-fun MuscleGridScreen(onMuscleClick: (MuscleGroup) -> Unit) {
-    val muscleGroups = listOf(
-        MuscleGroup(1, "Paja al fallo", R.drawable.ic_launcher_foreground)
-    )
+fun MuscleGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+
+    LaunchedEffect(Unit) {
+        viewModel.refreshExercises()
+    }
+
+
+    val uiState = viewModel.exercisesUiState
+
+    val context = LocalContext.current
+
+    LaunchedEffect(uiState) {
+        if (uiState is ExerciseUiState.Success) {
+            uiState.exercises.forEach { exercise ->
+                val request = ImageRequest.Builder(context)
+                    .data("http://192.168.1.91:8000/${exercise.image_path}")
+                    .build()
+                context.imageLoader.enqueue(request) // precarga
+
+            }
+        }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
+            .background(Color.Black)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.routine),
-            contentDescription = "Fondo",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
+
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -93,46 +125,74 @@ fun MuscleGridScreen(onMuscleClick: (MuscleGroup) -> Unit) {
                 textAlign = TextAlign.Center
             )
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(muscleGroups) { muscle ->
-                    MuscleCard(
-                        muscle = muscle,
-                        onClick = { onMuscleClick(muscle) }
+            when (uiState) {
+                is ExerciseUiState.Loading -> {
+                    Text(
+                        text = "Cargando ejercicios...",
+                        color = Color.White
                     )
                 }
+
+                is ExerciseUiState.Error -> {
+                    Text(text = "Error: ${uiState.message}")
+                }
+
+                is ExerciseUiState.Success -> {
+                    val exercises = uiState.exercises
+
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(exercises) { exercise ->
+                            MuscleCard(
+                                exercise = exercise,
+                                onClick = { onExerciseClick(exercise) }
+                            )
+                        }
+                    }
+                }
+
+                else-> {}
             }
+
+
+
         }
     }
 }
 
 @Composable
-fun MuscleCard(muscle: MuscleGroup, onClick: () -> Unit) {
+fun MuscleCard(exercise: Exercise, onClick: () -> Unit) {
+
+    val painter = rememberExerciseImagePainter(exercise.image_path)
+
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(12.dp))
             .background(Color.Gray)
             .clickable { onClick() }
-            .padding(16.dp),
+            .padding(16.dp)
+            .width(160.dp)
+            .height(180.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(id = muscle.imageRes),
-            contentDescription = muscle.name,
+            painter = painter,
+            contentDescription = exercise.name,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(100.dp)
                 .clip(CircleShape)
         )
+
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = muscle.name,
+            text = exercise.name,
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
             color = Color.White
@@ -141,7 +201,9 @@ fun MuscleCard(muscle: MuscleGroup, onClick: () -> Unit) {
 }
 
 @Composable
-fun ExpandedMuscleView(muscle: MuscleGroup, onBack: () -> Unit) {
+fun ExpandedMuscleView(exercise: Exercise, onBack: () -> Unit) {
+
+    val painter = rememberExerciseImagePainter(exercise.image_path)
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -151,21 +213,25 @@ fun ExpandedMuscleView(muscle: MuscleGroup, onBack: () -> Unit) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
+
             Image(
-                painter = painterResource(id = muscle.imageRes),
-                contentDescription = muscle.name,
+                painter = painter,
+                contentDescription = exercise.name,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(200.dp)
-                    .clip(CircleShape)
+                    .size(250.dp)
+                    .clip(RoundedCornerShape(16.dp))
+
             )
+
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = muscle.name,
+                text = exercise.name,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White
@@ -181,9 +247,18 @@ fun ExpandedMuscleView(muscle: MuscleGroup, onBack: () -> Unit) {
                 modifier = Modifier.padding(top = 12.dp, bottom = 8.dp)
             )
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = exercise.description,
+                fontSize = 16.sp,
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 12.dp, bottom = 8.dp)
+            )
+
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Botón "Añadir Ejercicio"
             Button(
                 onClick = { /* Acción para añadir ejercicio */ },
                 modifier = Modifier
@@ -203,7 +278,6 @@ fun ExpandedMuscleView(muscle: MuscleGroup, onBack: () -> Unit) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón "Volver"
             Button(
                 onClick = { onBack() },
                 modifier = Modifier
@@ -224,12 +298,26 @@ fun ExpandedMuscleView(muscle: MuscleGroup, onBack: () -> Unit) {
     }
 }
 
+@Composable
+fun rememberExerciseImagePainter(imagePath: String): Painter {
+    val context = LocalContext.current
+    return rememberAsyncImagePainter(
+        ImageRequest.Builder(context)
+            .data("http://192.168.1.91:8000/$imagePath")
+            .crossfade(true)
+            .decoderFactory(
+                if (Build.VERSION.SDK_INT >= 28)
+                    ImageDecoderDecoder.Factory()
+                else
+                    GifDecoder.Factory()
+            )
+
+            .diskCachePolicy(CachePolicy.ENABLED)
+            .memoryCachePolicy(CachePolicy.ENABLED)
+            .build()
+    )
+}
 
 
-data class MuscleGroup(
-    val id: Int,
-    val name: String,
-    val imageRes: Int
-)
 
 
