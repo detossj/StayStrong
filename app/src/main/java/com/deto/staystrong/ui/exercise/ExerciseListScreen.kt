@@ -52,9 +52,7 @@ import coil.request.ImageRequest
 import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.data.Exercise
 import coil.imageLoader
-
-
-
+import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -73,7 +71,7 @@ fun ExerciseListScreen(navController: NavController) {
         },
     ) { exercise ->
         if (exercise == null) {
-            MuscleGridScreen(onExerciseClick = { selectedExercise = it })
+            ExerciseGridScreen(onExerciseClick = { selectedExercise = it })
         } else {
             ExpandedMuscleView(
                 exercise = exercise,
@@ -84,7 +82,7 @@ fun ExerciseListScreen(navController: NavController) {
 }
 
 @Composable
-fun MuscleGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
 
     LaunchedEffect(Unit) {
         viewModel.refreshExercises()
@@ -128,10 +126,7 @@ fun MuscleGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseVie
 
             when (uiState) {
                 is ExerciseUiState.Loading -> {
-                    Text(
-                        text = "Cargando ejercicios...",
-                        color = Color.White
-                    )
+                    CustomCircularProgressIndicator("ejercicios")
                 }
 
                 is ExerciseUiState.Error -> {
@@ -149,7 +144,7 @@ fun MuscleGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseVie
                         modifier = Modifier.fillMaxSize()
                     ) {
                         items(exercises) { exercise ->
-                            MuscleCard(
+                            ExerciseCard(
                                 exercise = exercise,
                                 onClick = { onExerciseClick(exercise) }
                             )
@@ -167,7 +162,7 @@ fun MuscleGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseVie
 }
 
 @Composable
-fun MuscleCard(exercise: Exercise, onClick: () -> Unit) {
+fun ExerciseCard(exercise: Exercise, onClick: () -> Unit) {
 
     val painter = rememberExerciseImagePainter(exercise.image_path)
 
@@ -179,7 +174,8 @@ fun MuscleCard(exercise: Exercise, onClick: () -> Unit) {
             .padding(16.dp)
             .width(160.dp)
             .height(180.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Image(
             painter = painter,
