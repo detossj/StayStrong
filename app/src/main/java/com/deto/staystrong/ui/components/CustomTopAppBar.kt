@@ -12,7 +12,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.deto.staystrong.Login
 import com.deto.staystrong.R
-import com.deto.staystrong.Routine
+
+import com.deto.staystrong.Routines
 import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.ui.auth.AuthViewModel
 
@@ -25,7 +26,7 @@ fun CustomTopAppBar(navController: NavController, viewModel: AuthViewModel = vie
             IconButton(onClick = {
                 viewModel.logout()
                 navController.navigate(Login) {
-                    popUpTo(Routine) {
+                    popUpTo(Routines) {
                         inclusive = true
                     } // Quitar la pantalla de la pila de navegación
                 } }) {
