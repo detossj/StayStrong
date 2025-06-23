@@ -7,7 +7,6 @@ data class RoutineExercise(
     val id: Int,
     val routine_id: Int,
     val exercise_id: Int,
-    val order: Int,
-    val exercise: Exercise
+    val exercise:  Exercise? = null
 
 )
