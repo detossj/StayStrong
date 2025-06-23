@@ -45,7 +45,7 @@ fun RoutineScreen( navController: NavController, idRoutine: Int , formattedDate:
         },
         floatingActionButton = {
             CustomFloatingActionButton({
-                navController.navigate(ExerciseList)
+                navController.navigate(ExerciseList(idRoutine))
             })
         }
     ) { innerPadding ->
@@ -124,11 +124,11 @@ fun ExerciseItem(routineExercise: RoutineExercise) {
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
 
-                val painter = rememberExerciseImagePainter(routineExercise.exercise.image_path)
+                val painter = rememberExerciseImagePainter(routineExercise.exercise?.image_path ?: "")
 
                 Image(
                     painter = painter,
-                    contentDescription = routineExercise.exercise.name,
+                    contentDescription = routineExercise.exercise?.name,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(100.dp)
@@ -140,12 +140,12 @@ fun ExerciseItem(routineExercise: RoutineExercise) {
 
                 Column {
                     Text(
-                        text = routineExercise.exercise.name,
+                        text = routineExercise.exercise?.name ?: "",
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
                     Text(
-                        text = routineExercise.exercise.description,
+                        text = routineExercise.exercise?.description ?: "",
                         fontSize = 14.sp,
                         color = Color.Gray
                     )
