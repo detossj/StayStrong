@@ -53,11 +53,12 @@ import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.data.Exercise
 import coil.imageLoader
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
+import com.deto.staystrong.ui.routineExercise.RoutineExerciseViewModel
 
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun ExerciseListScreen(navController: NavController) {
+fun ExerciseListScreen(navController: NavController, idRoutine: Int) {
 
 
 
@@ -74,6 +75,8 @@ fun ExerciseListScreen(navController: NavController) {
             ExerciseGridScreen(onExerciseClick = { selectedExercise = it })
         } else {
             ExpandedMuscleView(
+                navController = navController,
+                idRoutine = idRoutine,
                 exercise = exercise,
                 onBack = { selectedExercise = null }
             )
@@ -198,12 +201,11 @@ fun ExerciseCard(exercise: Exercise, onClick: () -> Unit) {
 }
 
 @Composable
-fun ExpandedMuscleView(exercise: Exercise, onBack: () -> Unit) {
+fun ExpandedMuscleView( navController: NavController, idRoutine: Int, exercise: Exercise, onBack: () -> Unit, viewModel: RoutineExerciseViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
 
     BackHandler {
         onBack()
     }
-
     val painter = rememberExerciseImagePainter(exercise.image_path)
     Box(
         modifier = Modifier
@@ -261,7 +263,9 @@ fun ExpandedMuscleView(exercise: Exercise, onBack: () -> Unit) {
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = { /* Acción para añadir ejercicio */ },
+                onClick = {
+                    viewModel.addRoutineExercise(idRoutine,exercise.id)
+                    navController.popBackStack() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
