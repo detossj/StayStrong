@@ -33,7 +33,7 @@ object Routines
 data class Routine(val idRoutine: Int, val formattedDate: String)
 
 @Serializable
-object ExerciseList
+data class ExerciseList(val idRoutine: Int)
 
 
 
@@ -61,8 +61,9 @@ fun Navigation() {
             val args = backStackEntry.toRoute<Routine>()
             RoutineScreen(navController = navController, idRoutine = args.idRoutine, formattedDate = args.formattedDate)
         }
-        composable<ExerciseList> {
-            ExerciseListScreen(navController = navController)
+        composable<ExerciseList> { backStackEntry ->
+            val args = backStackEntry.toRoute<ExerciseList>()
+            ExerciseListScreen(navController = navController, idRoutine = args.idRoutine)
         }
     }
 }
