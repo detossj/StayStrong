@@ -19,6 +19,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.deto.staystrong.ExerciseList
@@ -92,7 +93,7 @@ fun RoutineScreen( navController: NavController, idRoutine: Int , formattedDate:
                             .padding(10.dp)
                     ) {
                         items(routine) { exercise ->
-                            ExerciseItem(exercise)
+                            ExerciseItem(idRoutine,exercise)
                         }
                     }
 
@@ -108,7 +109,10 @@ fun RoutineScreen( navController: NavController, idRoutine: Int , formattedDate:
 }
 
 @Composable
-fun ExerciseItem(routineExercise: RoutineExercise) {
+fun ExerciseItem(idRoutine: Int, routineExercise: RoutineExercise, viewModel: RoutineExerciseViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+
+    var expanded by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -138,26 +142,47 @@ fun ExerciseItem(routineExercise: RoutineExercise) {
                 Spacer(modifier = Modifier.width(12.dp))
 
 
-                Column {
+                Column(
+                    modifier = Modifier.widthIn(max = 180.dp)
+                ) {
                     Text(
                         text = routineExercise.exercise?.name ?: "",
                         fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
+                        fontSize = 16.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                     Text(
                         text = routineExercise.exercise?.description ?: "",
                         fontSize = 14.sp,
-                        color = Color.Gray
+                        color = Color.Gray,
+                        maxLines = 1
                     )
                 }
             }
 
-            IconButton(onClick = {}) {
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = "Opciones"
-                )
+            Box {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "Opciones"
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Eliminar") },
+                        onClick = {
+                            expanded = false
+                            viewModel.deleteRoutineExerciseById(idRoutine, routineExercise.id)
+                        }
+                    )
+                }
             }
+
         }
     }
 }
