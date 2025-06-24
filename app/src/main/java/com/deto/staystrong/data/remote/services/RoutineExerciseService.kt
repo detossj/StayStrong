@@ -4,6 +4,7 @@ package com.deto.staystrong.data.remote.services
 
 import com.deto.staystrong.data.RoutineExercise
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -15,4 +16,7 @@ interface RoutineExerciseService {
 
     @GET("api/routines/{routine}/exercises")
     suspend fun getRoutineExerciseById(@Path("routine") routineId: Int): List<RoutineExercise>
+
+    @DELETE("api/routines/{routine}/exercises/{routineExerciseId}")
+    suspend fun deleteRoutineExerciseById(@Path("routine") routineId: Int, @Path("routineExerciseId") routineExerciseId: Int ): RoutineExercise
 }
