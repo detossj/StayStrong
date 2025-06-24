@@ -2,6 +2,7 @@ package com.deto.staystrong.ui.routineExercise
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.deto.staystrong.ExerciseList
+import com.deto.staystrong.Set
 import com.deto.staystrong.data.RoutineExercise
 import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
@@ -93,7 +95,7 @@ fun RoutineScreen( navController: NavController, idRoutine: Int , formattedDate:
                             .padding(10.dp)
                     ) {
                         items(routine) { exercise ->
-                            ExerciseItem(idRoutine,exercise)
+                            ExerciseItem(navController, idRoutine,exercise)
                         }
                     }
 
@@ -109,14 +111,15 @@ fun RoutineScreen( navController: NavController, idRoutine: Int , formattedDate:
 }
 
 @Composable
-fun ExerciseItem(idRoutine: Int, routineExercise: RoutineExercise, viewModel: RoutineExerciseViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun ExerciseItem( navController: NavController, idRoutine: Int, routineExercise: RoutineExercise, viewModel: RoutineExerciseViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
 
     var expanded by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = 4.dp)
+            .clickable { navController.navigate(Set) },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
