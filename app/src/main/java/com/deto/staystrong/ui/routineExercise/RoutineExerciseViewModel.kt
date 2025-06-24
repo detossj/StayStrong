@@ -45,6 +45,19 @@ class RoutineExerciseViewModel(private val routineExerciseService: RoutineExerci
         }
     }
 
+    fun deleteRoutineExerciseById(routineId: Int, routineExerciseId: Int) {
+        viewModelScope.launch {
+            routineExerciseUiState = RoutineExerciseUiState.Loading
+            try {
+                routineExerciseService.deleteRoutineExerciseById(routineExerciseId,routineId)
+                val updatedList = routineExerciseService.getRoutineExerciseById(routineId)
+                routineExerciseUiState = RoutineExerciseUiState.Success(updatedList)
+            }
+            catch (e: Exception) {
+                routineExerciseUiState = RoutineExerciseUiState.Error(e.message ?: "error")
+            }
+        }
+    }
 
     fun refreshRoutineExercise(id: Int) {
         getRoutineExercise(id)
