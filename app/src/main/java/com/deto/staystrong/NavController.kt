@@ -13,6 +13,7 @@ import com.deto.staystrong.ui.auth.RegisterScreen
 import com.deto.staystrong.ui.exercise.ExerciseListScreen
 import com.deto.staystrong.ui.routineExercise.RoutineScreen
 import com.deto.staystrong.ui.routine.RoutinesScreen
+import com.deto.staystrong.ui.set.SetScreen
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
 
@@ -35,6 +36,8 @@ data class Routine(val idRoutine: Int, val formattedDate: String)
 @Serializable
 data class ExerciseList(val idRoutine: Int)
 
+@Serializable
+object Set
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -64,6 +67,9 @@ fun Navigation() {
         composable<ExerciseList> { backStackEntry ->
             val args = backStackEntry.toRoute<ExerciseList>()
             ExerciseListScreen(navController = navController, idRoutine = args.idRoutine)
+        }
+        composable<Set> {
+            SetScreen()
         }
     }
 }
