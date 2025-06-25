@@ -106,7 +106,7 @@ fun SetScreen(idRoutine: Int, idRoutineExercise: Int , nameExercise: String, vie
 
 
             Button(
-                onClick = {},
+                onClick = { viewModel.addSet(idRoutine, idRoutineExercise)  },
                 modifier = Modifier
                     .fillMaxWidth().padding(top = 10.dp),
                 colors = ButtonDefaults.buttonColors(
