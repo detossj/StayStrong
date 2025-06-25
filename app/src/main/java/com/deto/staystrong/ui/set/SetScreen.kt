@@ -1,10 +1,10 @@
 package com.deto.staystrong.ui.set
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,65 +15,96 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.deto.staystrong.data.Set
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.deto.staystrong.ui.AppViewModelProvider
+import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
+
 
 @Composable
-fun SetScreen(modifier: Modifier = Modifier) {
+fun SetScreen(idRoutine: Int, idRoutineExercise: Int , nameExercise: String, viewModel: SetViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
 
-    var rep by remember { mutableStateOf("") }
-    var weight by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf(false) }
 
+    LaunchedEffect(Unit) {
+        viewModel.refreshSets(idRoutine, idRoutineExercise)
+    }
+
+    val uiState = viewModel.setUiState
 
     Scaffold(
-        modifier = modifier.fillMaxSize()
-    ) { paddingValues ->
+        modifier = Modifier.fillMaxSize()
+    ) { innerPadding ->
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+                .padding(innerPadding)
+                .fillMaxWidth()
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Text(
-                text = "Nombre ejercicio",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
-                modifier = Modifier.padding(top = 70.dp, bottom = 16.dp),
-                textAlign = TextAlign.Center
-            )
+            when (uiState) {
+                is SetUiState.Loading -> {
+                    CustomCircularProgressIndicator("sets")
+                }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                OutlinedTextField(
-                    value = rep,
-                    onValueChange = { newValue ->
-                        rep = newValue
-                        errorMessage = false
-                    },
-                    label = { Text("Repeticiones") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true,
-                    modifier = Modifier.weight(1f)
-                )
-                OutlinedTextField(
-                    value = weight,
-                    onValueChange = { newValue ->
-                        weight = newValue
-                        errorMessage = false
-                    },
-                    label = { Text("Peso (kg)") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true,
-                    modifier = Modifier.weight(1f)
-                )
+                is SetUiState.Error -> {
+                    Text(text = "Error: ${uiState.message}")
+                }
+
+                is SetUiState.Success -> {
+                    val sets = uiState.sets
+
+                    Text(
+                        text = nameExercise,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        modifier = Modifier.padding(top = 70.dp, bottom = 16.dp),
+                        textAlign = TextAlign.Center
+                    )
+
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(1),
+                        contentPadding = PaddingValues(10.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+
+                        items(sets) { set ->
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                OutlinedTextField(
+                                    value = set.reps.toString(),
+                                    onValueChange = {},
+                                    label = { Text("Repeticiones") },
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                    singleLine = true,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                OutlinedTextField(
+                                    value = set.weight.toString(),
+                                    onValueChange = {},
+                                    label = { Text("Peso (kg)") },
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                    singleLine = true,
+                                    modifier = Modifier.weight(1f)
+                                )
+                            }
+                        }
+
+                    }
+
+
+                }
+
+                else -> {}
+
             }
+
+
             Button(
                 onClick = {},
                 modifier = Modifier
@@ -97,29 +128,4 @@ fun SetScreen(modifier: Modifier = Modifier) {
 
 
 
-@Composable
-fun SetItem(set: Set, onDeleteClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Set ${set.id}: ${set.reps} repes @ ${set.weight} kg",
-                style = MaterialTheme.typography.bodyLarge
-            )
-            IconButton(onClick = onDeleteClick) {
-                Icon(Icons.Filled.Delete, contentDescription = "Eliminar Set")
-            }
-        }
-    }
-}
 
