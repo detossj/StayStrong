@@ -195,7 +195,15 @@ fun ExerciseCard(exercise: Exercise, onClick: () -> Unit) {
             text = exercise.name,
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
-            color = Color.White
+            color = Color.White ,
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = exercise.description,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Normal,
+            color = Color.White,
+            textAlign = TextAlign.Center
         )
     }
 }
