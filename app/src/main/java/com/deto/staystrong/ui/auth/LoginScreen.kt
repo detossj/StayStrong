@@ -45,7 +45,7 @@ import com.deto.staystrong.R // Asegúrate de que R esté correctamente importad
 import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.ui.components.CustomButtonLoginAndRegister
 import com.deto.staystrong.ui.components.CustomOutlinedTextFieldLoginAndRegister
-
+import androidx.compose.foundation.layout.systemBarsPadding // Importa systemBarsPadding
 
 @Composable
 fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
@@ -54,7 +54,6 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
     var password by remember { mutableStateOf("") }
 
     var errorEmail by remember { mutableStateOf(false) }
-    // CORRECCIÓN: 'mutableToStateOf' debe ser 'mutableStateOf'
     var errorPassword by remember { mutableStateOf(false) }
 
     val authState = viewModel.authState
@@ -79,6 +78,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .systemBarsPadding() // CORRECCIÓN: Asegura que el contenido respete las barras del sistema
     ) {
         // IMAGEN DE FONDO
         Image(
@@ -205,7 +205,6 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
                         modifier = Modifier.padding(top = 8.dp)
                     )
                 }
-
                 is AuthUiState.Error -> {
                     // Muestra el mensaje de error específico del ViewModel
                     Text(
