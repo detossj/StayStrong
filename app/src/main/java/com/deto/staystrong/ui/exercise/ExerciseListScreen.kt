@@ -195,7 +195,16 @@ fun ExerciseCard(exercise: Exercise, onClick: () -> Unit) {
             text = exercise.name,
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
-            color = Color.White
+            color = Color.White,
+            textAlign = TextAlign.Center
+
+        )
+        Text(
+            text = exercise.description,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Normal,
+            color = Color.White,
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -243,14 +252,12 @@ fun ExpandedMuscleView( navController: NavController, idRoutine: Int, exercise: 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Informacion del Ejercicio:",
+                text = "Tipo de Ejercicio:",
                 fontSize = 16.sp,
                 color = Color.White,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 12.dp, bottom = 8.dp)
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = exercise.description,
@@ -280,7 +287,6 @@ fun ExpandedMuscleView( navController: NavController, idRoutine: Int, exercise: 
                     fontWeight = FontWeight.Bold
                 )
             }
-
 
         }
     }
