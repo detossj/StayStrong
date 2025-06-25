@@ -11,7 +11,7 @@ import retrofit2.http.Path
 interface SetService {
 
     @POST("api/routine-exercises/{routineExerciseId}/sets")
-    suspend fun addSet(@Path("routineExerciseId") routineId: Int, @Body set: Set): SetService
+    suspend fun addSet(@Path("routineExerciseId") routineId: Int): Set
 
     @PUT("api/sets/{setId}")
     suspend fun updateSetById(@Path("setId") setId: Int)
