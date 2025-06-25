@@ -119,7 +119,7 @@ fun ExerciseItem( navController: NavController, idRoutine: Int, routineExercise:
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
-            .clickable { navController.navigate(Set) },
+            .clickable { navController.navigate(Set(idRoutine, routineExercise.id, routineExercise.exercise?.name ?: "")) },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
