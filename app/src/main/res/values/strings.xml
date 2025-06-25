@@ -18,5 +18,6 @@
     <string name="register_auth_successful">Registrado correctamente</string>
     <string name="login_bottom_text">¿Aún no tienes una cuenta?</string>
     <string name="login_bottom_textbutton">Únete aquí</string>
+    <string name="SearchFilter">Buscar</string>
 
 </resources>

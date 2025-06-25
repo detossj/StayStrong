@@ -34,19 +34,26 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import coil.request.CachePolicy
 import androidx.compose.runtime.*
+import com.deto.staystrong.R
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
+import coil.decode.ImageSource
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.deto.staystrong.ui.AppViewModelProvider
@@ -59,7 +66,6 @@ import com.deto.staystrong.ui.routineExercise.RoutineExerciseViewModel
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ExerciseListScreen(navController: NavController, idRoutine: Int) {
-
 
 
     var selectedExercise by remember { mutableStateOf<Exercise?>(null) }
@@ -87,6 +93,8 @@ fun ExerciseListScreen(navController: NavController, idRoutine: Int) {
 @Composable
 fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
 
+    var exerciseFilter by remember { mutableStateOf("") }
+
     LaunchedEffect(Unit) {
         viewModel.refreshExercises()
     }
@@ -109,7 +117,8 @@ fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseV
     }
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(Color.Black)
     ) {
 
@@ -138,7 +147,26 @@ fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseV
 
                 is ExerciseUiState.Success -> {
                     val exercises = uiState.exercises
+                    var exercisesListFilter = exercises.filter {
+                        it.name.contains(exerciseFilter, ignoreCase = true) || it.description.contains(exerciseFilter, ignoreCase = true)
+                    }
 
+                    OutlinedTextField(
+                        value = exerciseFilter,
+                        onValueChange = {exerciseFilter = it},
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        singleLine = true,
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.Search,
+                                contentDescription = "Buscar notas"
+                            )
+                        },
+                        placeholder = { Text(text = stringResource(R.string.SearchFilter)) },
+                        shape = RoundedCornerShape(30.dp)
+                    )
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                         contentPadding = PaddingValues(16.dp),
@@ -146,7 +174,8 @@ fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseV
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        items(exercises) { exercise ->
+
+                        items(exercisesListFilter) { exercise ->
                             ExerciseCard(
                                 exercise = exercise,
                                 onClick = { onExerciseClick(exercise) }
@@ -196,6 +225,13 @@ fun ExerciseCard(exercise: Exercise, onClick: () -> Unit) {
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
             color = Color.White
+        )
+        Text(
+            text = exercise.description,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Normal,
+            color = Color.White,
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -305,6 +341,7 @@ fun rememberExerciseImagePainter(imagePath: String): Painter {
             .build()
     )
 }
+
 
 
 
