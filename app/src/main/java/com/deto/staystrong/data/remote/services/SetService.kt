@@ -14,7 +14,7 @@ interface SetService {
     suspend fun addSet(@Path("routineExerciseId") routineId: Int, @Body set: Set): Set
 
     @PUT("api/sets/{setId}")
-    suspend fun updateSetById(@Path("setId") setId: Int)
+    suspend fun updateSetById(@Path("setId") setId: Int, @Body set: Set) : Set
 
     @DELETE("api/sets/{setId}")
     suspend fun deleteSetById(@Path("setId") setId: Int)
