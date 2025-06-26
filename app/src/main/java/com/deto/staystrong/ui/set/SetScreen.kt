@@ -2,6 +2,7 @@ package com.deto.staystrong.ui.set
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,6 +23,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 import com.deto.staystrong.R
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+
+
 
 
 @Composable
@@ -75,59 +80,132 @@ fun SetScreen(idRoutine: Int, idRoutineExercise: Int , nameExercise: String, vie
 
                         items(sets) { set ->
 
-                            var reps by remember { mutableStateOf(set.reps.toString()) }
-                            var weight by remember { mutableStateOf(set.weight.toString()) }
+                            val originalReps = set.reps.toString()
+                            val originalWeight = set.weight.toString()
+                            var reps by remember { mutableStateOf(originalReps) }
+                            var weight by remember { mutableStateOf(originalWeight) }
 
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                            val hasChanged = reps != originalReps || weight != originalWeight
+
+
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 8.dp),
+                                colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E)), // fondo oscuro elegante
+                                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                             ) {
-                                OutlinedTextField(
-                                    value = reps,
-                                    onValueChange = { reps = it },
-                                    label = { Text("Repeticiones") },
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                    singleLine = true,
-                                    modifier = Modifier.weight(1f)
-                                )
-                                OutlinedTextField(
-                                    value = weight,
-                                    onValueChange = { weight = it },
-                                    label = { Text("Peso (kg)") },
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                    singleLine = true,
-                                    modifier = Modifier.weight(1f)
-                                )
-
-                                IconButton(
-                                    onClick = {
-                                        val updatedSet = set.copy(
-                                            reps = reps.toIntOrNull() ?: set.reps,
-                                            weight = weight.toFloatOrNull() ?: set.weight
+                                Column(
+                                    modifier = Modifier.padding(12.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        OutlinedTextField(
+                                            value = reps,
+                                            onValueChange = { reps = it },
+                                            label = { Text("Reps") },
+                                            leadingIcon = {
+                                                Icon(
+                                                    painter = painterResource(R.drawable.exercise_24px), // usa un ícono relevante
+                                                    contentDescription = null
+                                                )
+                                            },
+                                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                            singleLine = true,
+                                            modifier = Modifier.weight(1f),
+                                            colors = OutlinedTextFieldDefaults.colors(
+                                                unfocusedBorderColor = Color.Gray,
+                                                focusedBorderColor = Color.White,
+                                                cursorColor = Color.White,
+                                                focusedLabelColor = Color.White,
+                                                unfocusedLabelColor = Color.Gray,
+                                                focusedTextColor = Color.White
+                                            )
                                         )
-                                        viewModel.updateSet(updatedSet, idRoutine, idRoutineExercise)
-                                    }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.save_24px),
-                                        contentDescription = "Guardar",
-                                        tint = Color.White
-                                    )
-                                }
 
-                                IconButton(
-                                    onClick = {
-                                        viewModel.deleteSetById(set.id,idRoutine,idRoutineExercise)
+                                        OutlinedTextField(
+                                            value = weight,
+                                            onValueChange = { weight = it },
+                                            label = { Text("Peso (kg)") },
+                                            leadingIcon = {
+                                                Icon(
+                                                    painter = painterResource(R.drawable.weight_24px), // ícono opcional
+                                                    contentDescription = null
+                                                )
+                                            },
+                                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                            singleLine = true,
+                                            modifier = Modifier.weight(1f),
+                                            colors = OutlinedTextFieldDefaults.colors(
+                                                unfocusedBorderColor = Color.Gray,
+                                                focusedBorderColor = Color.White,
+                                                cursorColor = Color.White,
+                                                focusedLabelColor = Color.White,
+                                                unfocusedLabelColor = Color.Gray,
+                                                focusedTextColor = Color.White
+                                            )
+                                        )
                                     }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Delete,
-                                        contentDescription = "Eliminar",
-                                        tint = Color.Red
-                                    )
+
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.End
+                                    ) {
+                                        IconButton(
+                                            onClick = {
+                                                val updatedSet = set.copy(
+                                                    reps = reps.toIntOrNull() ?: set.reps,
+                                                    weight = weight.toFloatOrNull() ?: set.weight
+                                                )
+                                                viewModel.updateSet(updatedSet, idRoutine, idRoutineExercise)
+                                            },
+                                            enabled = hasChanged
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.save_24px),
+                                                contentDescription = "Guardar",
+                                                tint = if (hasChanged) Color.White else Color.Gray
+                                            )
+                                        }
+
+                                        IconButton(
+                                            onClick = {
+                                                viewModel.deleteSetById(set.id, idRoutine, idRoutineExercise)
+                                            }
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Delete,
+                                                contentDescription = "Eliminar",
+                                                tint = Color.Red
+                                            )
+                                        }
+                                    }
                                 }
                             }
+
+                        }
+
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            Button(
+                                onClick = { viewModel.addSet(idRoutine, idRoutineExercise)  },
+                                modifier = Modifier
+                                    .fillMaxWidth().padding(top = 10.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.White,
+                                    contentColor = Color.Black
+                                )
+                            ) {
+                                Text(
+                                    text = "Añadir Set",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+
                         }
 
                     }
@@ -137,23 +215,6 @@ fun SetScreen(idRoutine: Int, idRoutineExercise: Int , nameExercise: String, vie
 
                 else -> {}
 
-            }
-
-
-            Button(
-                onClick = { viewModel.addSet(idRoutine, idRoutineExercise)  },
-                modifier = Modifier
-                    .fillMaxWidth().padding(top = 10.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White,
-                    contentColor = Color.Black
-                )
-            ) {
-                Text(
-                    text = "Añadir Set",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
             }
 
         }
