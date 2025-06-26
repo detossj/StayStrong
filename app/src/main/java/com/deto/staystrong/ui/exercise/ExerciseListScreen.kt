@@ -34,16 +34,26 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import coil.request.CachePolicy
 import androidx.compose.runtime.*
+import com.deto.staystrong.R
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
@@ -55,6 +65,7 @@ import com.deto.staystrong.data.Exercise
 import coil.imageLoader
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 import com.deto.staystrong.ui.routineExercise.RoutineExerciseViewModel
+import java.text.Normalizer
 
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -88,6 +99,8 @@ fun ExerciseListScreen(navController: NavController, idRoutine: Int) {
 @Composable
 fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
 
+    var exerciseFilter by remember { mutableStateOf("") }
+
     LaunchedEffect(Unit) {
         viewModel.refreshExercises()
     }
@@ -110,7 +123,8 @@ fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseV
     }
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(Color.Black)
     ) {
 
@@ -139,7 +153,26 @@ fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseV
 
                 is ExerciseUiState.Success -> {
                     val exercises = uiState.exercises
+                    var exercisesListFilter = exercises.filter {
+                        it.name.normalize().contains(exerciseFilter.normalize()) || it.description.normalize().contains(exerciseFilter.normalize())
+                    }
 
+                    OutlinedTextField(
+                        value = exerciseFilter,
+                        onValueChange = {exerciseFilter = it},
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        singleLine = true,
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.Search,
+                                contentDescription = "Buscar notas"
+                            )
+                        },
+                        placeholder = { Text(text = stringResource(R.string.SearchFilter)) },
+                        shape = RoundedCornerShape(30.dp)
+                    )
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                         contentPadding = PaddingValues(16.dp),
@@ -147,9 +180,11 @@ fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseV
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        items(exercises) { exercise ->
+
+                        items(exercisesListFilter) { exercise ->
                             ExerciseCard(
                                 exercise = exercise,
+                                exercisesListFilter = exerciseFilter,
                                 onClick = { onExerciseClick(exercise) }
                             )
                         }
@@ -166,7 +201,7 @@ fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseV
 }
 
 @Composable
-fun ExerciseCard(exercise: Exercise, onClick: () -> Unit) {
+fun ExerciseCard(exercise: Exercise, exercisesListFilter: String, onClick: () -> Unit) {
 
     val painter = rememberExerciseImagePainter(exercise.image_path)
 
@@ -192,15 +227,13 @@ fun ExerciseCard(exercise: Exercise, onClick: () -> Unit) {
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = exercise.name,
+            text = highlightMatch(exercise.name,exercisesListFilter,Color(0xFFFF9800)),
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
             color = Color.White,
-            textAlign = TextAlign.Center
-
         )
         Text(
-            text = exercise.description,
+            text = highlightMatch(exercise.description,exercisesListFilter,Color(0xFFFF9800)),
             fontSize = 14.sp,
             fontWeight = FontWeight.Normal,
             color = Color.White,
@@ -295,6 +328,7 @@ fun ExpandedMuscleView( navController: NavController, idRoutine: Int, exercise: 
                 )
             }
 
+
         }
     }
 }
@@ -318,6 +352,51 @@ fun rememberExerciseImagePainter(imagePath: String): Painter {
             .build()
     )
 }
+
+@Composable
+fun highlightMatch(text: String, filter: String, highlightColor: Color): AnnotatedString {
+    return buildAnnotatedString {
+        if (filter.isEmpty()) {
+            append(text)
+            return@buildAnnotatedString
+        }
+
+        val normalizedFilter = filter.normalize()
+        var i = 0
+
+        while (i < text.length) {
+
+            val remainingText = text.substring(i)
+            val normalizedRemaining = remainingText.normalize()
+
+            val matchIndex = normalizedRemaining.indexOf(normalizedFilter)
+            if (matchIndex == -1) {
+                append(text.substring(i))
+                break
+            } else {
+                val realMatchStart = i + matchIndex
+                val realMatchEnd = realMatchStart + text.substring(realMatchStart).take(filter.length).length
+
+                append(text.substring(i, realMatchStart))
+
+                withStyle(style = SpanStyle(color = highlightColor, fontWeight = FontWeight.Bold)) {
+                    append(text.substring(realMatchStart, realMatchEnd))
+                }
+
+                i = realMatchEnd
+            }
+        }
+    }
+}
+
+
+
+fun String.normalize(): String {
+    return Normalizer.normalize(this, Normalizer.Form.NFD)
+        .replace(Regex("\\p{InCombiningDiacriticalMarks}+"), "")
+        .lowercase()
+}
+
 
 
 
