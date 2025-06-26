@@ -41,7 +41,7 @@ class SetViewModel(private val setService: SetService) : ViewModel() {
         setUiState = SetUiState.Loading
         viewModelScope.launch {
             try {
-                setService.addSet(idRoutineExercise)
+                setService.addSet(idRoutineExercise, Set(0,idRoutineExercise,0,0.0f))
                 val updatedList = setService.getSets(idRoutine,idRoutineExercise)
                 setUiState = SetUiState.Success(updatedList)
             }
