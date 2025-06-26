@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
@@ -157,22 +158,7 @@ fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseV
                         it.name.normalize().contains(exerciseFilter.normalize()) || it.description.normalize().contains(exerciseFilter.normalize())
                     }
 
-                    OutlinedTextField(
-                        value = exerciseFilter,
-                        onValueChange = {exerciseFilter = it},
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        singleLine = true,
-                        leadingIcon = {
-                            Icon(
-                                Icons.Default.Search,
-                                contentDescription = "Buscar notas"
-                            )
-                        },
-                        placeholder = { Text(text = stringResource(R.string.SearchFilter)) },
-                        shape = RoundedCornerShape(30.dp)
-                    )
+
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                         contentPadding = PaddingValues(16.dp),
@@ -180,6 +166,24 @@ fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseV
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier.fillMaxSize()
                     ) {
+
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            OutlinedTextField(
+                                value = exerciseFilter,
+                                onValueChange = { exerciseFilter = it },
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                singleLine = true,
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Default.Search,
+                                        contentDescription = "Buscar ejercicios"
+                                    )
+                                },
+                                placeholder = { Text(text = stringResource(R.string.SearchFilter)) },
+                                shape = RoundedCornerShape(30.dp)
+                            )
+                        }
 
                         items(exercisesListFilter) { exercise ->
                             ExerciseCard(
@@ -231,6 +235,7 @@ fun ExerciseCard(exercise: Exercise, exercisesListFilter: String, onClick: () ->
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
             color = Color.White,
+            textAlign = TextAlign.Center
         )
         Text(
             text = highlightMatch(exercise.description,exercisesListFilter,Color(0xFFFF9800)),
