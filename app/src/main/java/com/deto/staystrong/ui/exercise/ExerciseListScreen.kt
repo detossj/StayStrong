@@ -49,18 +49,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
-import coil.decode.ImageSource
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.data.Exercise
-import coil.imageLoader
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 import com.deto.staystrong.ui.routineExercise.RoutineExerciseViewModel
+import java.text.Normalizer
 
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -148,7 +151,7 @@ fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseV
                 is ExerciseUiState.Success -> {
                     val exercises = uiState.exercises
                     var exercisesListFilter = exercises.filter {
-                        it.name.contains(exerciseFilter, ignoreCase = true) || it.description.contains(exerciseFilter, ignoreCase = true)
+                        it.name.normalize().contains(exerciseFilter.normalize()) || it.description.normalize().contains(exerciseFilter.normalize())
                     }
 
                     OutlinedTextField(
@@ -178,6 +181,7 @@ fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseV
                         items(exercisesListFilter) { exercise ->
                             ExerciseCard(
                                 exercise = exercise,
+                                exercisesListFilter = exerciseFilter,
                                 onClick = { onExerciseClick(exercise) }
                             )
                         }
@@ -194,7 +198,7 @@ fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseV
 }
 
 @Composable
-fun ExerciseCard(exercise: Exercise, onClick: () -> Unit) {
+fun ExerciseCard(exercise: Exercise, exercisesListFilter: String, onClick: () -> Unit) {
 
     val painter = rememberExerciseImagePainter(exercise.image_path)
 
@@ -221,13 +225,13 @@ fun ExerciseCard(exercise: Exercise, onClick: () -> Unit) {
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = exercise.name,
+            text = highlightMatch(exercise.name,exercisesListFilter,Color(0xFFFF9800)),
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
-            color = Color.White
+            color = Color.White,
         )
         Text(
-            text = exercise.description,
+            text = highlightMatch(exercise.description,exercisesListFilter,Color(0xFFFF9800)),
             fontSize = 14.sp,
             fontWeight = FontWeight.Normal,
             color = Color.White,
@@ -340,6 +344,50 @@ fun rememberExerciseImagePainter(imagePath: String): Painter {
             .memoryCachePolicy(CachePolicy.ENABLED)
             .build()
     )
+}
+
+@Composable
+fun highlightMatch(text: String, filter: String, highlightColor: Color): AnnotatedString {
+    return buildAnnotatedString {
+        if (filter.isEmpty()) {
+            append(text)
+            return@buildAnnotatedString
+        }
+
+        val normalizedFilter = filter.normalize()
+        var i = 0
+
+        while (i < text.length) {
+
+            val remainingText = text.substring(i)
+            val normalizedRemaining = remainingText.normalize()
+
+            val matchIndex = normalizedRemaining.indexOf(normalizedFilter)
+            if (matchIndex == -1) {
+                append(text.substring(i))
+                break
+            } else {
+                val realMatchStart = i + matchIndex
+                val realMatchEnd = realMatchStart + text.substring(realMatchStart).take(filter.length).length
+
+                append(text.substring(i, realMatchStart))
+
+                withStyle(style = SpanStyle(color = highlightColor, fontWeight = FontWeight.Bold)) {
+                    append(text.substring(realMatchStart, realMatchEnd))
+                }
+
+                i = realMatchEnd
+            }
+        }
+    }
+}
+
+
+
+fun String.normalize(): String {
+    return Normalizer.normalize(this, Normalizer.Form.NFD)
+        .replace(Regex("\\p{InCombiningDiacriticalMarks}+"), "")
+        .lowercase()
 }
 
 
