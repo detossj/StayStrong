@@ -51,6 +51,19 @@ class SetViewModel(private val setService: SetService) : ViewModel() {
         }
     }
 
+    fun updateSet(set: Set, idRoutine: Int, idRoutineExercise: Int) {
+        setUiState = SetUiState.Loading
+        viewModelScope.launch {
+            try {
+                setService.updateSetById(set.id, set)
+                val updatedList = setService.getSets(idRoutine, idRoutineExercise)
+                setUiState = SetUiState.Success(updatedList)
+            } catch (e: Exception) {
+                setUiState = SetUiState.Error(e.message ?: "Error al actualizar")
+            }
+        }
+    }
+
     fun deleteSetById(idSet: Int,idRoutine: Int, idRoutineExercise: Int) {
         setUiState = SetUiState.Loading
         viewModelScope.launch {

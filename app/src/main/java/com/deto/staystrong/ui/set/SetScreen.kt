@@ -75,22 +75,25 @@ fun SetScreen(idRoutine: Int, idRoutineExercise: Int , nameExercise: String, vie
 
                         items(sets) { set ->
 
+                            var reps by remember { mutableStateOf(set.reps.toString()) }
+                            var weight by remember { mutableStateOf(set.weight.toString()) }
+
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 OutlinedTextField(
-                                    value = set.reps.toString(),
-                                    onValueChange = {},
+                                    value = reps,
+                                    onValueChange = { reps = it },
                                     label = { Text("Repeticiones") },
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                     singleLine = true,
                                     modifier = Modifier.weight(1f)
                                 )
                                 OutlinedTextField(
-                                    value = set.weight.toString(),
-                                    onValueChange = {},
+                                    value = weight,
+                                    onValueChange = { weight = it },
                                     label = { Text("Peso (kg)") },
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                     singleLine = true,
@@ -99,7 +102,11 @@ fun SetScreen(idRoutine: Int, idRoutineExercise: Int , nameExercise: String, vie
 
                                 IconButton(
                                     onClick = {
-
+                                        val updatedSet = set.copy(
+                                            reps = reps.toIntOrNull() ?: set.reps,
+                                            weight = weight.toFloatOrNull() ?: set.weight
+                                        )
+                                        viewModel.updateSet(updatedSet, idRoutine, idRoutineExercise)
                                     }
                                 ) {
                                     Icon(
