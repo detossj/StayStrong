@@ -111,7 +111,7 @@ fun SetScreen(idRoutine: Int, idRoutineExercise: Int , nameExercise: String, vie
 
                                 IconButton(
                                     onClick = {
-
+                                        viewModel.deleteSetById(set.id,idRoutine,idRoutineExercise)
                                     }
                                 ) {
                                     Icon(
