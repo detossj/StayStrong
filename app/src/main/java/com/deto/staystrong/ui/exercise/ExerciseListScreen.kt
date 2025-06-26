@@ -41,6 +41,7 @@ import androidx.compose.ui.layout.ContentScale
 import coil.request.CachePolicy
 import androidx.compose.runtime.*
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -176,9 +177,8 @@ fun ExerciseCard(exercise: Exercise, onClick: () -> Unit) {
             .clickable { onClick() }
             .padding(16.dp)
             .width(160.dp)
-            .height(180.dp),
+            .height(230.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
     ) {
         Image(
             painter = painter,
@@ -219,7 +219,12 @@ fun ExpandedMuscleView( navController: NavController, idRoutine: Int, exercise: 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Gray)
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(Color.DarkGray, Color.Black)
+                )
+            )
+
     ) {
         Column(
             modifier = Modifier
@@ -246,25 +251,27 @@ fun ExpandedMuscleView( navController: NavController, idRoutine: Int, exercise: 
                 text = exercise.name,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = Color.White,
+                textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Tipo de Ejercicio:",
-                fontSize = 16.sp,
+                text = "Grupos musculares trabajados:",
+                fontSize = 18.sp,
                 color = Color.White,
+                fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 12.dp, bottom = 8.dp)
+                modifier = Modifier.padding(top = 12.dp, bottom = 4.dp)
             )
 
             Text(
                 text = exercise.description,
                 fontSize = 16.sp,
-                color = Color.White,
+                color = Color.White.copy(alpha = 0.9f),
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 12.dp, bottom = 8.dp)
+                modifier = Modifier.padding(bottom = 16.dp)
             )
 
             Spacer(modifier = Modifier.height(24.dp))
