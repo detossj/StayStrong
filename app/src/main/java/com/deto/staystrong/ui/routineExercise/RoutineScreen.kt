@@ -25,7 +25,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.deto.staystrong.ExerciseList
 import com.deto.staystrong.Set
-import com.deto.staystrong.data.RoutineExercise
+import com.deto.staystrong.model.RoutineExercise
 import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 import com.deto.staystrong.ui.components.CustomFloatingActionButton

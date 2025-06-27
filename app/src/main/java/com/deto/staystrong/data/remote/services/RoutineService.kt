@@ -1,6 +1,6 @@
 package com.deto.staystrong.data.remote.services
 
-import com.deto.staystrong.data.Routine
+import com.deto.staystrong.model.Routine
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST

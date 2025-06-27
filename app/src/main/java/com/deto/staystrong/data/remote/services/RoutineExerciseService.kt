@@ -2,7 +2,7 @@ package com.deto.staystrong.data.remote.services
 
 
 
-import com.deto.staystrong.data.RoutineExercise
+import com.deto.staystrong.model.RoutineExercise
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET

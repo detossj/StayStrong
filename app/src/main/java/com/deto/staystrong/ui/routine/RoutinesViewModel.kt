@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.deto.staystrong.data.Routine
+import com.deto.staystrong.model.Routine
 import com.deto.staystrong.data.remote.services.RoutineService
 import kotlinx.coroutines.launch
 import java.time.LocalDate

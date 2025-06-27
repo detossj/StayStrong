@@ -62,7 +62,7 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.deto.staystrong.ui.AppViewModelProvider
-import com.deto.staystrong.data.Exercise
+import com.deto.staystrong.model.Exercise
 import coil.imageLoader
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 import com.deto.staystrong.ui.routineExercise.RoutineExerciseViewModel

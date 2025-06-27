@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.deto.staystrong.data.Exercise
+import com.deto.staystrong.model.Exercise
 import com.deto.staystrong.data.remote.services.ExerciseService
 
 import kotlinx.coroutines.launch

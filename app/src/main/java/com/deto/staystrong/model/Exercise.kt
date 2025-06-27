@@ -1,9 +1,7 @@
-package com.deto.staystrong.data
-import androidx.room.PrimaryKey
+package com.deto.staystrong.model
 
 
 data class Exercise(
-    @PrimaryKey(autoGenerate = true)
     val id: Int,
     val name: String,
     val description: String,

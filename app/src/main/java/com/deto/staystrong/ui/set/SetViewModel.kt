@@ -1,13 +1,13 @@
 package com.deto.staystrong.ui.set
 
 import androidx.lifecycle.ViewModel
-import com.deto.staystrong.data.Set
+import com.deto.staystrong.model.Set
 import com.deto.staystrong.data.remote.services.SetService
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
-import com.deto.staystrong.data.Routine
+import com.deto.staystrong.model.Routine
 import com.deto.staystrong.ui.routine.RoutinesUiState
 import kotlinx.coroutines.launch
 import java.time.LocalDate
