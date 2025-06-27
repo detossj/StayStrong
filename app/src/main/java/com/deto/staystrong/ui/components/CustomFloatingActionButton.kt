@@ -17,8 +17,8 @@ fun CustomFloatingActionButton(onClick: () -> Unit) {
 
     FloatingActionButton(
         onClick = onClick,
-        containerColor = Color.Gray,
-        contentColor = Color.White,
+        containerColor = Color.White,
+        contentColor = Color.Black,
         shape = RoundedCornerShape(30.dp)
     ) {
         Icon(

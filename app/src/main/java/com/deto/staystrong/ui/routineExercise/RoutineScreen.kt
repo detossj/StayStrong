@@ -15,11 +15,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -61,18 +63,27 @@ fun RoutineScreen( navController: NavController, idRoutine: Int , formattedDate:
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.Gray)
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            listOf(
+                                Color(0xFF2C2C2C),
+                                Color(0xFF4F4F4F)
+                            )
+                        )
+                    )
+                    .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
                     .padding(vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
+                horizontalArrangement = Arrangement.SpaceBetween
+            )  {
 
                 Text(
                     text = "Rutina de $formattedDate",
                     color = Color.White,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    textAlign = TextAlign.Center
                 )
             }
 
@@ -88,12 +99,28 @@ fun RoutineScreen( navController: NavController, idRoutine: Int , formattedDate:
                 }
 
                 is RoutineExerciseUiState.Success -> {
+
                     val routine = uiState.routine
+
+                    if (routine.isEmpty()) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(32.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text("No hay ejercicios en esta rutina.", style = MaterialTheme.typography.bodyLarge)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("Toca el botón '+' para agregar uno.", style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
                     LazyColumn(
                         modifier = Modifier
                             .weight(1f)
                             .padding(10.dp)
                     ) {
+
                         items(routine) { exercise ->
                             ExerciseItem(navController, idRoutine,exercise)
                         }
@@ -120,6 +147,7 @@ fun ExerciseItem( navController: NavController, idRoutine: Int, routineExercise:
             .fillMaxWidth()
             .padding(vertical = 4.dp)
             .clickable { navController.navigate(Set(idRoutine, routineExercise.id, routineExercise.exercise?.name ?: "")) },
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E)),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(

@@ -28,6 +28,8 @@ import com.deto.staystrong.ui.components.CustomTopAppBar
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import com.deto.staystrong.R
@@ -72,17 +74,16 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.routine),
-                contentDescription = "Fondo",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
+//            Image(
+//                painter = painterResource(id = R.drawable.routine),
+//                contentDescription = "Fondo",
+//                contentScale = ContentScale.Crop,
+//                modifier = Modifier.fillMaxSize()
+//            )
 
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White.copy(alpha = 0.1f))
             )
 
 
@@ -93,7 +94,15 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.Gray)
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                listOf(
+                                    Color(0xFF2C2C2C),
+                                    Color(0xFF4F4F4F)
+                                )
+                            )
+                        )
+                        .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
                         .padding(vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -158,6 +167,21 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
                                 routine.date.startsWith(selectedDate.toString())
                             }
 
+                            if (filteredRoutines.isEmpty()) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(32.dp),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text("No hay rutinas para esta fecha.", style = MaterialTheme.typography.bodyLarge)
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text("Toca el botón '+' para crear una nueva.", style = MaterialTheme.typography.bodySmall)
+                                }
+                            }
+
+
                             LazyVerticalGrid(
                                 columns = GridCells.Fixed(1),
                                 contentPadding = PaddingValues(10.dp),
@@ -169,30 +193,29 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
 
                                     Card(
                                         modifier = Modifier
-                                            .padding(20.dp)
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp, vertical = 10.dp)
                                             .clickable {
                                                 selected = routine.id
-                                                navController.navigate(Routine(selected,formattedDate))
-                                                       },
-                                        colors = CardColors(
-                                            contentColor = Color.Black,
-                                            containerColor = Color.White,
-                                            disabledContentColor = Color.White,
-                                            disabledContainerColor = Color.Transparent
-                                        ),
-                                        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                                                navController.navigate(Routine(selected, formattedDate))
+                                            },
                                         shape = RoundedCornerShape(16.dp),
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = Color(0xFFF2F2F2),
+                                            contentColor = Color.Black
+                                        ),
+                                        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
                                     ) {
                                         Column(
                                             modifier = Modifier
                                                 .fillMaxWidth()
-                                                .fillMaxHeight()
-                                                .padding(horizontal = 20.dp, vertical = 35.dp),
-                                            verticalArrangement = Arrangement.Center,
-                                            horizontalAlignment = Alignment.CenterHorizontally
+                                                .padding(20.dp)
                                         ) {
-
-                                            Text(text = "Rutina ${index + 1}")
+                                            Text(
+                                                text = "Rutina ${index + 1}",
+                                                style = MaterialTheme.typography.titleMedium,
+                                                fontWeight = FontWeight.Bold
+                                            )
                                         }
                                     }
                                 }
@@ -209,6 +232,8 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
 
     if (showCalendarDialog.value) {
         AlertDialog(
+            containerColor = Color.White,
+            shape = RoundedCornerShape(16.dp),
             onDismissRequest = { showCalendarDialog.value = false },
             confirmButton = {
                 TextButton(onClick = { showCalendarDialog.value = false }) {

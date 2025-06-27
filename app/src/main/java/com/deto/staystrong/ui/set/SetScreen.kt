@@ -92,7 +92,7 @@ fun SetScreen(idRoutine: Int, idRoutineExercise: Int , nameExercise: String, vie
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = 8.dp),
-                                colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E)), // fondo oscuro elegante
+                                colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E)),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                             ) {
                                 Column(
@@ -110,7 +110,7 @@ fun SetScreen(idRoutine: Int, idRoutineExercise: Int , nameExercise: String, vie
                                             label = { Text("Reps") },
                                             leadingIcon = {
                                                 Icon(
-                                                    painter = painterResource(R.drawable.exercise_24px), // usa un ícono relevante
+                                                    painter = painterResource(R.drawable.exercise_24px),
                                                     contentDescription = null
                                                 )
                                             },
@@ -133,7 +133,7 @@ fun SetScreen(idRoutine: Int, idRoutineExercise: Int , nameExercise: String, vie
                                             label = { Text("Peso (kg)") },
                                             leadingIcon = {
                                                 Icon(
-                                                    painter = painterResource(R.drawable.weight_24px), // ícono opcional
+                                                    painter = painterResource(R.drawable.weight_24px),
                                                     contentDescription = null
                                                 )
                                             },
