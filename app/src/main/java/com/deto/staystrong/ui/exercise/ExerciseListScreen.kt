@@ -31,30 +31,18 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import coil.request.CachePolicy
 import androidx.compose.runtime.*
-import com.deto.staystrong.R
 import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
@@ -62,12 +50,10 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.deto.staystrong.ui.AppViewModelProvider
-import com.deto.staystrong.model.Exercise
+import com.deto.staystrong.data.Exercise
 import coil.imageLoader
-import com.deto.staystrong.data.remote.ApiClient
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 import com.deto.staystrong.ui.routineExercise.RoutineExerciseViewModel
-import java.text.Normalizer
 
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -101,8 +87,6 @@ fun ExerciseListScreen(navController: NavController, idRoutine: Int) {
 @Composable
 fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
 
-    var exerciseFilter by remember { mutableStateOf("") }
-
     LaunchedEffect(Unit) {
         viewModel.refreshExercises()
     }
@@ -125,8 +109,7 @@ fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseV
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
             .background(Color.Black)
     ) {
 
@@ -155,10 +138,6 @@ fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseV
 
                 is ExerciseUiState.Success -> {
                     val exercises = uiState.exercises
-                    var exercisesListFilter = exercises.filter {
-                        it.name.normalize().contains(exerciseFilter.normalize()) || it.description.normalize().contains(exerciseFilter.normalize())
-                    }
-
 
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
@@ -167,29 +146,9 @@ fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseV
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier.fillMaxSize()
                     ) {
-
-                        item(span = { GridItemSpan(maxLineSpan) }) {
-                            OutlinedTextField(
-                                value = exerciseFilter,
-                                onValueChange = { exerciseFilter = it },
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                singleLine = true,
-                                leadingIcon = {
-                                    Icon(
-                                        Icons.Default.Search,
-                                        contentDescription = "Buscar ejercicios"
-                                    )
-                                },
-                                placeholder = { Text(text = stringResource(R.string.SearchFilter)) },
-                                shape = RoundedCornerShape(30.dp)
-                            )
-                        }
-
-                        items(exercisesListFilter) { exercise ->
+                        items(exercises) { exercise ->
                             ExerciseCard(
                                 exercise = exercise,
-                                exercisesListFilter = exerciseFilter,
                                 onClick = { onExerciseClick(exercise) }
                             )
                         }
@@ -206,7 +165,7 @@ fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseV
 }
 
 @Composable
-fun ExerciseCard(exercise: Exercise, exercisesListFilter: String, onClick: () -> Unit) {
+fun ExerciseCard(exercise: Exercise, onClick: () -> Unit) {
 
     val painter = rememberExerciseImagePainter(exercise.image_path)
 
@@ -217,8 +176,9 @@ fun ExerciseCard(exercise: Exercise, exercisesListFilter: String, onClick: () ->
             .clickable { onClick() }
             .padding(16.dp)
             .width(160.dp)
-            .height(230.dp),
+            .height(180.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Image(
             painter = painter,
@@ -232,18 +192,10 @@ fun ExerciseCard(exercise: Exercise, exercisesListFilter: String, onClick: () ->
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = highlightMatch(exercise.name,exercisesListFilter,Color(0xFFFF9800)),
+            text = exercise.name,
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
-            color = Color.White,
-            textAlign = TextAlign.Center
-        )
-        Text(
-            text = highlightMatch(exercise.description,exercisesListFilter,Color(0xFFFF9800)),
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Normal,
-            color = Color.White,
-            textAlign = TextAlign.Center
+            color = Color.White
         )
     }
 }
@@ -258,12 +210,7 @@ fun ExpandedMuscleView( navController: NavController, idRoutine: Int, exercise: 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(Color.DarkGray, Color.Black)
-                )
-            )
-
+            .background(Color.Gray)
     ) {
         Column(
             modifier = Modifier
@@ -290,27 +237,27 @@ fun ExpandedMuscleView( navController: NavController, idRoutine: Int, exercise: 
                 text = exercise.name,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White,
-                textAlign = TextAlign.Center
+                color = Color.White
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Grupos musculares trabajados:",
-                fontSize = 18.sp,
+                text = "Informacion del Ejercicio:",
+                fontSize = 16.sp,
                 color = Color.White,
-                fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 12.dp, bottom = 4.dp)
+                modifier = Modifier.padding(top = 12.dp, bottom = 8.dp)
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = exercise.description,
                 fontSize = 16.sp,
-                color = Color.White.copy(alpha = 0.9f),
+                color = Color.White,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(top = 12.dp, bottom = 8.dp)
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -344,7 +291,7 @@ fun rememberExerciseImagePainter(imagePath: String): Painter {
     val context = LocalContext.current
     return rememberAsyncImagePainter(
         ImageRequest.Builder(context)
-            .data("/$imagePath")
+            .data("http://192.168.1.91:8000/$imagePath")
             .crossfade(true)
             .decoderFactory(
                 if (Build.VERSION.SDK_INT >= 28)
@@ -358,51 +305,6 @@ fun rememberExerciseImagePainter(imagePath: String): Painter {
             .build()
     )
 }
-
-@Composable
-fun highlightMatch(text: String, filter: String, highlightColor: Color): AnnotatedString {
-    return buildAnnotatedString {
-        if (filter.isEmpty()) {
-            append(text)
-            return@buildAnnotatedString
-        }
-
-        val normalizedFilter = filter.normalize()
-        var i = 0
-
-        while (i < text.length) {
-
-            val remainingText = text.substring(i)
-            val normalizedRemaining = remainingText.normalize()
-
-            val matchIndex = normalizedRemaining.indexOf(normalizedFilter)
-            if (matchIndex == -1) {
-                append(text.substring(i))
-                break
-            } else {
-                val realMatchStart = i + matchIndex
-                val realMatchEnd = realMatchStart + text.substring(realMatchStart).take(filter.length).length
-
-                append(text.substring(i, realMatchStart))
-
-                withStyle(style = SpanStyle(color = highlightColor, fontWeight = FontWeight.Bold)) {
-                    append(text.substring(realMatchStart, realMatchEnd))
-                }
-
-                i = realMatchEnd
-            }
-        }
-    }
-}
-
-
-
-fun String.normalize(): String {
-    return Normalizer.normalize(this, Normalizer.Form.NFD)
-        .replace(Regex("\\p{InCombiningDiacriticalMarks}+"), "")
-        .lowercase()
-}
-
 
 
 

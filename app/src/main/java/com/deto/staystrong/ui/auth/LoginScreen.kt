@@ -32,19 +32,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.deto.staystrong.Login
-import com.deto.staystrong.R
-import com.deto.staystrong.Register
-import com.deto.staystrong.Routines
+import com.deto.staystrong.Login // Importa el objeto @Serializable Login
+import com.deto.staystrong.Register // Importa el objeto @Serializable Register
+import com.deto.staystrong.Routines // Importa el objeto @Serializable Routines
+import com.deto.staystrong.R // Asegúrate de que R esté correctamente importado para tus recursos
 import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.ui.components.CustomButtonLoginAndRegister
 import com.deto.staystrong.ui.components.CustomOutlinedTextFieldLoginAndRegister
-
+import androidx.compose.foundation.layout.systemBarsPadding // Importa systemBarsPadding
 
 @Composable
 fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
@@ -56,19 +57,30 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
     var errorPassword by remember { mutableStateOf(false) }
 
     val authState = viewModel.authState
+    val scope = rememberCoroutineScope() // Se mantiene por si necesitas ejecutar coroutines aquí
 
     LaunchedEffect(authState) {
         if (authState is AuthUiState.Success) {
+            // Navega a la pantalla de Rutinas una vez que el login es exitoso
             navController.navigate(Routines) {
+                // popUpTo remueve la pantalla de Login de la pila de navegación
                 popUpTo(Login) { inclusive = true }
             }
+            // Opcional: Si quieres resetear el estado del ViewModel después de una navegación exitosa,
+            // descomenta lo siguiente. Esto puede ser útil para evitar re-trigger si la pantalla
+            // se recompone o si se vuelve a ella por alguna razón inusual.
+            // scope.launch {
+            //     viewModel.authState = AuthUiState.Idle
+            // }
         }
     }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .systemBarsPadding() // CORRECCIÓN: Asegura que el contenido respete las barras del sistema
     ) {
+        // IMAGEN DE FONDO
         Image(
             painter = painterResource(id = R.drawable.login),
             contentDescription = "Fondo",
@@ -76,10 +88,11 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
             modifier = Modifier.fillMaxSize()
         )
 
+        // CAPA SEMI-TRANSPARENTE SOBRE LA IMAGEN
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White.copy(alpha = 0.1f))
+                .background(Color.White.copy(alpha = 0.1f)) // Ajusta la opacidad si es necesario
         )
 
         Column(
@@ -90,17 +103,19 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
             verticalArrangement = Arrangement.Center
         ) {
 
+            // LOGO DE LA APLICACIÓN
             Image(
                 painter = painterResource(id = R.drawable.ic_launcher_foreground),
                 contentDescription = "Logo Aplicacion",
                 modifier = Modifier
                     .size(100.dp)
                     .clip(CircleShape)
-                    .border(4.dp, Color.White, CircleShape)
+                    .border(4.dp, Color.White, CircleShape) // Borde blanco alrededor del logo
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // TÍTULO DE INICIO DE SESIÓN
             Text(
                 text = stringResource(R.string.login_title),
                 style = MaterialTheme.typography.headlineSmall,
@@ -110,6 +125,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // CAMPO DE TEXTO PARA EMAIL
             CustomOutlinedTextFieldLoginAndRegister(
                 value = email,
                 onValueChange = { email = it },
@@ -122,6 +138,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // CAMPO DE TEXTO PARA CONTRASEÑA
             CustomOutlinedTextFieldLoginAndRegister(
                 value = password,
                 onValueChange = { password = it },
@@ -134,11 +151,22 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            // BOTÓN DE INICIAR SESIÓN
             CustomButtonLoginAndRegister(
                 onClick = {
-                    errorEmail = email.isBlank()
-                    errorPassword = password.isBlank()
+                    // Reinicia los estados de error antes de validar
+                    errorEmail = false
+                    errorPassword = false
 
+                    // Valida si los campos están vacíos
+                    if (email.isBlank()) {
+                        errorEmail = true
+                    }
+                    if (password.isBlank()) {
+                        errorPassword = true
+                    }
+
+                    // Si no hay errores, procede con el login
                     if (!errorEmail && !errorPassword) {
                         viewModel.login(email, password)
                     }
@@ -148,10 +176,12 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // TEXTO Y BOTÓN PARA REGISTRO
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(stringResource(R.string.login_bottom_text), color = Color.White)
+                // Navega a la pantalla de Registro usando el objeto @Serializable Register
                 TextButton(onClick = { navController.navigate(Register) }) {
                     Text(stringResource(R.string.login_bottom_textbutton), color = Color.White, fontWeight = FontWeight.Bold)
                 }
@@ -159,32 +189,36 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            // INDICADORES DE ESTADO (Loading, Success, Error)
             when (authState) {
                 is AuthUiState.Loading -> {
                     CircularProgressIndicator(
                         color = Color.White
                     )
                 }
-
                 is AuthUiState.Success -> {
+                    // El LaunchedEffect ya maneja la navegación.
+                    // Este mensaje es solo informativo y se mostrará brevemente antes de la navegación.
                     Text(
                         text = stringResource(R.string.login_auth_successful),
                         color = Color.White,
                         modifier = Modifier.padding(top = 8.dp)
                     )
                 }
-
                 is AuthUiState.Error -> {
+                    // Muestra el mensaje de error específico del ViewModel
                     Text(
-                        text = authState.message,
+                        text = authState.message, // Accede al mensaje de error
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(top = 8.dp)
                     )
                 }
-
-                else -> {}
-
+                // Los estados Idle y SessionState no necesitan una representación visual específica
+                // en esta pantalla de login, ya que su lógica de navegación se maneja en AuthManager (Composable).
+                AuthUiState.Idle, is AuthUiState.SessionState -> {
+                    // No hace nada, la UI permanece normal o sin indicadores extra.
+                }
             }
         }
     }
