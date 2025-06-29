@@ -64,7 +64,7 @@ import coil.request.ImageRequest
 import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.model.Exercise
 import coil.imageLoader
-import com.deto.staystrong.data.remote.ApiClient.BASE_URL
+import com.deto.staystrong.data.remote.ApiClient
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 import com.deto.staystrong.ui.routineExercise.RoutineExerciseViewModel
 import java.text.Normalizer
@@ -344,7 +344,7 @@ fun rememberExerciseImagePainter(imagePath: String): Painter {
     val context = LocalContext.current
     return rememberAsyncImagePainter(
         ImageRequest.Builder(context)
-            .data(BASE_URL + "/"+ "$imagePath")
+            .data("/$imagePath")
             .crossfade(true)
             .decoderFactory(
                 if (Build.VERSION.SDK_INT >= 28)
