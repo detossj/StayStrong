@@ -66,7 +66,7 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
         floatingActionButton = {
             CustomFloatingActionButton({ viewModel.addRoutine(selectedDate)})
         },
-        bottomBar = { CustomBottomAppBar() }
+        bottomBar = { CustomBottomAppBar(navController) }
     ) { innerPadding ->
         Box(
             modifier = Modifier

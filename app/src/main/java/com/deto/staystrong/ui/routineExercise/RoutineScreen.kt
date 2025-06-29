@@ -50,7 +50,7 @@ fun RoutineScreen( navController: NavController, idRoutine: Int , formattedDate:
                 navController.navigate(ExerciseList(idRoutine))
             })
         },
-        bottomBar = { CustomBottomAppBar() }
+        bottomBar = { CustomBottomAppBar(navController) }
     ) { innerPadding ->
         Column(
             modifier = Modifier
