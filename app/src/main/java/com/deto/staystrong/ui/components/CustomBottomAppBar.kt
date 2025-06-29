@@ -18,12 +18,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.deto.staystrong.Home
 import com.deto.staystrong.R
-
+import com.deto.staystrong.Routines
 
 
 @Composable
-fun CustomBottomAppBar() {
+fun CustomBottomAppBar(navController: NavController) {
     BottomAppBar(
         modifier = Modifier.fillMaxWidth(),
         containerColor = Color.Black
@@ -33,25 +35,26 @@ fun CustomBottomAppBar() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             val items = listOf(
-                R.drawable.home_24px to "Inicio",
-                R.drawable.nutrition_24px to "Recetas",
-                R.drawable.add_circle_24px to "Entrenar",
-                R.drawable.show_chart_24px to "Progreso",
-                R.drawable.account_circle_24px to "Tú"
+                Triple(R.drawable.home_24px, "Inicio", Home),
+                Triple(R.drawable.nutrition_24px, "Recetas", Home),
+                Triple(R.drawable.add_circle_24px, "Entrenar", Routines),
+                Triple(R.drawable.show_chart_24px, "Progreso", Home),
+                Triple(R.drawable.account_circle_24px, "Tú", Home )
             )
 
-            items.forEach { (iconRes, label) ->
+
+            items.forEach { (iconRes, label, route) ->
                 Button(
-                    onClick = {  },
+                    onClick = {
+                        navController.navigate(route)
+                    },
                     modifier = Modifier
                         .weight(1f)
                         .padding(horizontal = 2.dp),
                     contentPadding = PaddingValues(0.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Icon(
                             painter = painterResource(iconRes),
                             contentDescription = label,
