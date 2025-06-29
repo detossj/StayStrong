@@ -37,10 +37,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.deto.staystrong.Home
 import com.deto.staystrong.Login
 import com.deto.staystrong.R
 import com.deto.staystrong.Register
-import com.deto.staystrong.Routines
 import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.ui.components.CustomButtonLoginAndRegister
 import com.deto.staystrong.ui.components.CustomOutlinedTextFieldLoginAndRegister
@@ -59,7 +59,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
 
     LaunchedEffect(authState) {
         if (authState is AuthUiState.Success) {
-            navController.navigate(Routines) {
+            navController.navigate(Home) {
                 popUpTo(Login) { inclusive = true }
             }
         }

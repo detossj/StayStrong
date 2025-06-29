@@ -11,8 +11,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.deto.staystrong.AuthManager
+import com.deto.staystrong.Home
 import com.deto.staystrong.Login
-import com.deto.staystrong.Routines
 import com.deto.staystrong.ui.AppViewModelProvider
 
 @Composable
@@ -23,7 +23,7 @@ fun AuthManager(navController: NavHostController, viewModel: AuthViewModel = vie
         when (authState) {
             is AuthUiState.loggedIn -> {
                 if (authState.logged) {
-                    navController.navigate(Routines) {
+                    navController.navigate(Home) {
                         popUpTo(AuthManager) {
                             inclusive = true
                         } // Quitar la pantalla de la pila de navegación
