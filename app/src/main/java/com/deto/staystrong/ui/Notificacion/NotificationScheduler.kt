@@ -8,7 +8,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresPermission
 import java.util.Calendar
-
+//notificaciones
 object NotificationScheduler {
 
     @RequiresPermission(Manifest.permission.SCHEDULE_EXACT_ALARM)

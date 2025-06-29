@@ -8,7 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
-
+//notificaciones
 class DailyReminderReceiver : BroadcastReceiver() {
     @SuppressLint("ScheduleExactAlarm")
     override fun onReceive(context: Context, intent: Intent?) {

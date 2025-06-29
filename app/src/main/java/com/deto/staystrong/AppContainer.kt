@@ -7,7 +7,7 @@ import android.os.Build
 import com.deto.staystrong.data.AppContainer
 import com.deto.staystrong.data.AppDataContainer
 import com.deto.staystrong.ui.Notificacion.NotificationScheduler
-
+//notificaciones
 class StayStrong : Application() {
     lateinit var container: AppContainer
 
