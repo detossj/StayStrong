@@ -1,4 +1,10 @@
 package com.deto.staystrong.model
 
-class Recipe {
-}
+
+data class Recipe(
+    val title: String,
+    val description: String,
+    val ingredients: String,
+    val steps: String,
+    val calories: String
+)
