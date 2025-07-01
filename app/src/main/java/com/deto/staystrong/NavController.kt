@@ -12,11 +12,12 @@ import com.deto.staystrong.ui.auth.LoginScreen
 import com.deto.staystrong.ui.auth.RegisterScreen
 import com.deto.staystrong.ui.exercise.ExerciseListScreen
 import com.deto.staystrong.ui.home.HomeScreen
+import com.deto.staystrong.ui.recipe.RecipeScreen
+import com.deto.staystrong.ui.recipe.RecipesScreen
 import com.deto.staystrong.ui.routineExercise.RoutineScreen
 import com.deto.staystrong.ui.routine.RoutinesScreen
 import com.deto.staystrong.ui.set.SetScreen
 import kotlinx.serialization.Serializable
-import java.time.LocalDate
 
 
 @Serializable
@@ -30,6 +31,12 @@ object Register
 
 @Serializable
 object Home
+
+@Serializable
+object Recipes
+
+@Serializable
+object Recipe
 
 @Serializable
 object Routines
@@ -63,6 +70,12 @@ fun Navigation() {
         }
         composable<Home> {
             HomeScreen(navController = navController)
+        }
+        composable<Recipes> {
+            RecipesScreen(navController = navController)
+        }
+        composable<Recipe> {
+            RecipeScreen(navController = navController)
         }
         composable<Routines> {
             RoutinesScreen(navController = navController)
