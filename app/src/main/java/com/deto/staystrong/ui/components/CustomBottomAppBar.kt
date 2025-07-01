@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.deto.staystrong.Home
 import com.deto.staystrong.R
+import com.deto.staystrong.Recipes
 import com.deto.staystrong.Routines
 
 
@@ -36,7 +37,7 @@ fun CustomBottomAppBar(navController: NavController) {
         ) {
             val items = listOf(
                 Triple(R.drawable.home_24px, "Inicio", Home),
-                Triple(R.drawable.nutrition_24px, "Recetas", Home),
+                Triple(R.drawable.nutrition_24px, "Recetas", Recipes),
                 Triple(R.drawable.add_circle_24px, "Entrenar", Routines),
                 Triple(R.drawable.show_chart_24px, "Progreso", Home),
                 Triple(R.drawable.account_circle_24px, "Tú", Home )
