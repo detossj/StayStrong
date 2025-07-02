@@ -17,6 +17,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.deto.staystrong.ui.Notificacion.NotificationScheduler
 import com.deto.staystrong.ui.theme.StayStrongTheme
+import androidx.core.content.edit
 
 
 class MainActivity : ComponentActivity() {
@@ -34,10 +35,10 @@ class MainActivity : ComponentActivity() {
                 val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 val scheduled = NotificationScheduler.scheduleDailyReminder(applicationContext)
                 getSharedPreferences("app_prefs", MODE_PRIVATE)
-                    .edit()
-                    .putBoolean("is_daily_reminder_scheduled", scheduled)
-                    .putBoolean("exact_alarm_permission_needed", !scheduled)
-                    .apply()
+                    .edit() {
+                        putBoolean("is_daily_reminder_scheduled", scheduled)
+                            .putBoolean("exact_alarm_permission_needed", !scheduled)
+                    }
             }
         }
 
@@ -78,17 +79,17 @@ class MainActivity : ComponentActivity() {
             } else {
                 val scheduled = NotificationScheduler.scheduleDailyReminder(applicationContext)
                 getSharedPreferences("app_prefs", MODE_PRIVATE)
-                    .edit()
-                    .putBoolean("is_daily_reminder_scheduled", scheduled)
-                    .putBoolean("exact_alarm_permission_needed", !scheduled)
-                    .apply()
+                    .edit() {
+                        putBoolean("is_daily_reminder_scheduled", scheduled)
+                            .putBoolean("exact_alarm_permission_needed", !scheduled)
+                    }
             }
         } else {
             val scheduled = NotificationScheduler.scheduleDailyReminder(applicationContext)
             getSharedPreferences("app_prefs", MODE_PRIVATE)
-                .edit()
-                .putBoolean("is_daily_reminder_scheduled", scheduled)
-                .apply()
+                .edit() {
+                    putBoolean("is_daily_reminder_scheduled", scheduled)
+                }
         }
     }
 
