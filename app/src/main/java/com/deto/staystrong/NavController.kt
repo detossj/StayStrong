@@ -36,7 +36,7 @@ object Home
 object Recipes
 
 @Serializable
-object Recipe
+data class Recipe(val idRecipe: Int)
 
 @Serializable
 object Routines
@@ -74,8 +74,9 @@ fun Navigation() {
         composable<Recipes> {
             RecipesScreen(navController = navController)
         }
-        composable<Recipe> {
-            RecipeScreen(navController = navController)
+        composable<Recipe> { backStackEntry ->
+            val args = backStackEntry.toRoute<Recipe>()
+            RecipeScreen(navController = navController, idRecipe = args.idRecipe)
         }
         composable<Routines> {
             RoutinesScreen(navController = navController)
