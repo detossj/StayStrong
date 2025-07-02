@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.deto.staystrong.model.RoutineVideo
 import com.deto.staystrong.ui.components.CustomBottomAppBar
+import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 
 @Composable
 fun HomeScreen(navController: NavController, viewModel: RoutineVideoViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
@@ -63,14 +64,16 @@ fun HomeScreen(navController: NavController, viewModel: RoutineVideoViewModel = 
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
-                    modifier = Modifier.padding(top = 70.dp, bottom = 16.dp),
+                    modifier = Modifier
+                        .padding(top = 70.dp, bottom = 16.dp)
+                        .padding(horizontal = 16.dp),
                     textAlign = TextAlign.Center
                 )
 
                 when (uiState) {
                     is RoutineVideoUiState.Loading -> {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator()
+                            CustomCircularProgressIndicator("videos")
                         }
                     }
                     is RoutineVideoUiState.Error -> {
