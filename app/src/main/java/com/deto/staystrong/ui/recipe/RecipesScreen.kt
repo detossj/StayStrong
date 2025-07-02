@@ -41,6 +41,7 @@ import com.deto.staystrong.model.Recipe
 import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.ui.components.CustomBottomAppBar
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
+import com.deto.staystrong.ui.exercise.rememberExerciseImagePainter
 import com.deto.staystrong.ui.home.RoutineVideoUiState
 
 @Composable
@@ -90,11 +91,6 @@ fun RecipesScreen(navController : NavController, viewModel: RecipesViewModel = v
                         val recipes = uiState.recipes
                         RecipesGrid(navController = navController ,recipes = recipes)
                     }
-                    RoutineVideoUiState.Idle -> {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text("No hay recetas disponibles")
-                        }
-                    }
 
                     else -> {}
                 }
@@ -140,13 +136,8 @@ fun RecipeCard(navController : NavController, recipe: Recipe) {
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val context = LocalContext.current
-            val painter = rememberAsyncImagePainter(
-                model = ImageRequest.Builder(context)
-                    .data(BASE_URL + "/" + recipe.image_path)
-                    .size(200)
-                    .build()
-            )
+
+            val painter = rememberExerciseImagePainter(recipe.image_path)
 
             Image(
                 painter = painter,
