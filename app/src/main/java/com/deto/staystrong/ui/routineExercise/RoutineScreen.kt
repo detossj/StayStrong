@@ -29,9 +29,9 @@ import com.deto.staystrong.ExerciseList
 import com.deto.staystrong.Set
 import com.deto.staystrong.model.RoutineExercise
 import com.deto.staystrong.ui.AppViewModelProvider
+import com.deto.staystrong.ui.components.CustomBottomAppBar
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 import com.deto.staystrong.ui.components.CustomFloatingActionButton
-import com.deto.staystrong.ui.components.CustomTopAppBar
 import com.deto.staystrong.ui.exercise.rememberExerciseImagePainter
 
 
@@ -45,14 +45,12 @@ fun RoutineScreen( navController: NavController, idRoutine: Int , formattedDate:
     val uiState = viewModel.routineExerciseUiState
 
     Scaffold(
-        topBar = {
-            CustomTopAppBar(navController = navController)
-        },
         floatingActionButton = {
             CustomFloatingActionButton({
                 navController.navigate(ExerciseList(idRoutine))
             })
-        }
+        },
+        bottomBar = { CustomBottomAppBar(navController) }
     ) { innerPadding ->
         Column(
             modifier = Modifier

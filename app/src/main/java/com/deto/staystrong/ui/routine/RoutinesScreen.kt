@@ -34,6 +34,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import com.deto.staystrong.R
 import com.deto.staystrong.Routine
+import com.deto.staystrong.ui.components.CustomBottomAppBar
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 import com.deto.staystrong.ui.components.CustomFloatingActionButton
 
@@ -62,12 +63,10 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
     }
 
     Scaffold(
-        topBar = {
-            CustomTopAppBar(navController = navController)
-        },
         floatingActionButton = {
             CustomFloatingActionButton({ viewModel.addRoutine(selectedDate)})
-        }
+        },
+        bottomBar = { CustomBottomAppBar(navController) }
     ) { innerPadding ->
         Box(
             modifier = Modifier

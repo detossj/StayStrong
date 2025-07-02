@@ -4,8 +4,10 @@ import android.content.Context
 import com.deto.staystrong.data.remote.ApiClient
 import com.deto.staystrong.data.remote.services.AuthService
 import com.deto.staystrong.data.remote.services.ExerciseService
+import com.deto.staystrong.data.remote.services.RecipeService
 import com.deto.staystrong.data.remote.services.RoutineExerciseService
 import com.deto.staystrong.data.remote.services.RoutineService
+import com.deto.staystrong.data.remote.services.RoutineVideoService
 import com.deto.staystrong.data.remote.services.SetService
 
 interface AppContainer {
@@ -14,6 +16,8 @@ interface AppContainer {
     val exerciseApiService: ExerciseService
     val routineExerciseApiService: RoutineExerciseService
     val setApiService: SetService
+    val routineVideoService: RoutineVideoService
+    val recipeService: RecipeService
 }
 
 class AppDataContainer(private val context: Context) : AppContainer {
@@ -37,5 +41,15 @@ class AppDataContainer(private val context: Context) : AppContainer {
     override val setApiService: SetService by lazy {
         ApiClient.create(context).create(SetService::class.java)
     }
+
+    override val routineVideoService: RoutineVideoService by lazy {
+        ApiClient.create(context).create(RoutineVideoService::class.java)
+    }
+
+    override val recipeService: RecipeService by lazy {
+        ApiClient.create(context).create(RecipeService::class.java)
+    }
+
+
 
 }
