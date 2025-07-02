@@ -29,7 +29,7 @@ import com.deto.staystrong.data.remote.ApiClient.BASE_URL
 import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.ui.components.CustomBottomAppBar
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
-
+import com.deto.staystrong.ui.exercise.rememberExerciseImagePainter
 
 
 @Composable
@@ -73,8 +73,10 @@ fun RecipeScreen(navController: NavController, idRecipe: Int, viewModel: RecipeV
                     ) {
                         item {
 
+                            val painter = rememberExerciseImagePainter(recipe.image_path)
+
                             Image(
-                                painter = rememberAsyncImagePainter(BASE_URL + "/" + recipe.image_path),
+                                painter = painter,
                                 contentDescription = recipe.title,
                                 modifier = Modifier
                                     .fillMaxWidth()
