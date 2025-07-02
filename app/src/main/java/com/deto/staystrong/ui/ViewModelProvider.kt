@@ -8,6 +8,7 @@ import com.deto.staystrong.StayStrong
 import com.deto.staystrong.ui.auth.AuthViewModel
 import com.deto.staystrong.ui.exercise.ExerciseViewModel
 import com.deto.staystrong.ui.home.RoutineVideoViewModel
+import com.deto.staystrong.ui.recipe.RecipeViewModel
 import com.deto.staystrong.ui.recipe.RecipesViewModel
 import com.deto.staystrong.ui.routine.RoutinesViewModel
 import com.deto.staystrong.ui.routineExercise.RoutineExerciseViewModel
@@ -36,6 +37,9 @@ object AppViewModelProvider {
         }
         initializer {
             RecipesViewModel(App().container.recipeService)
+        }
+        initializer {
+            RecipeViewModel(App().container.recipeService)
         }
     }
 }
