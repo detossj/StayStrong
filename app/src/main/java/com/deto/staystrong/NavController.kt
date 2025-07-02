@@ -12,6 +12,7 @@ import com.deto.staystrong.ui.auth.LoginScreen
 import com.deto.staystrong.ui.auth.RegisterScreen
 import com.deto.staystrong.ui.exercise.ExerciseListScreen
 import com.deto.staystrong.ui.home.HomeScreen
+import com.deto.staystrong.ui.profile.ProfileScreen
 import com.deto.staystrong.ui.recipe.RecipeScreen
 import com.deto.staystrong.ui.recipe.RecipesScreen
 import com.deto.staystrong.ui.routineExercise.RoutineScreen
@@ -40,6 +41,9 @@ data class Recipe(val idRecipe: Int)
 
 @Serializable
 object Routines
+
+@Serializable
+object Profile
 
 @Serializable
 data class Routine(val idRoutine: Int, val formattedDate: String)
@@ -81,6 +85,10 @@ fun Navigation() {
         composable<Routines> {
             RoutinesScreen(navController = navController)
         }
+        composable<Profile> {
+            ProfileScreen(navController = navController)
+        }
+
         composable<Routine> { backStackEntry ->
             val args = backStackEntry.toRoute<Routine>()
             RoutineScreen(navController = navController, idRoutine = args.idRoutine, formattedDate = args.formattedDate)
@@ -93,5 +101,7 @@ fun Navigation() {
             val args = backStackEntry.toRoute<Set>()
             SetScreen(idRoutine = args.idRoutine, idRoutineExercise = args.idRoutineExercise, nameExercise = args.nameExercise)
         }
+
+
     }
 }
