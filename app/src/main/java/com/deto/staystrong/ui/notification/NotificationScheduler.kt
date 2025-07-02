@@ -30,7 +30,7 @@ object NotificationScheduler {
         )
 
 
-        val calendar = Calendar.getInstance().apply {
+        /*val calendar = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, 17) // 8 AM
             set(Calendar.MINUTE, 26)
             set(Calendar.SECOND, 0)
@@ -39,6 +39,13 @@ object NotificationScheduler {
             if (before(Calendar.getInstance())) {
                 add(Calendar.DATE, 1)
             }
+        }*/
+
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis() // Hora actual
+            add(Calendar.MINUTE, 1) // Sumar 1 minuto
+            set(Calendar.SECOND, 0) // Resetear segundos a 0
+            set(Calendar.MILLISECOND, 0) // Resetear milisegundos a 0
         }
 
         try {
