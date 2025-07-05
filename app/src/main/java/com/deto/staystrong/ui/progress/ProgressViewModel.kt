@@ -20,7 +20,7 @@ class ProgressViewModel(private val monthlyVolumeService: MonthlyVolumeService) 
     var monthlyVolumesUiState: ProgressUiState by mutableStateOf(ProgressUiState.Loading)
         private set
 
-    private fun getMonthlyVolumes(userId: Int ){
+    fun getMonthlyVolumes(userId: Int ){
         viewModelScope.launch {
             monthlyVolumesUiState = ProgressUiState.Loading
             monthlyVolumesUiState = try {
