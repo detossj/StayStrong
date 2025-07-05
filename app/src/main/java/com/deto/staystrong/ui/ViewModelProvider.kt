@@ -8,6 +8,7 @@ import com.deto.staystrong.StayStrong
 import com.deto.staystrong.ui.auth.AuthViewModel
 import com.deto.staystrong.ui.exercise.ExerciseViewModel
 import com.deto.staystrong.ui.home.RoutineVideoViewModel
+import com.deto.staystrong.ui.progress.ProgressViewModel
 import com.deto.staystrong.ui.recipe.RecipeViewModel
 import com.deto.staystrong.ui.recipe.RecipesViewModel
 import com.deto.staystrong.ui.routine.RoutinesViewModel
@@ -40,6 +41,9 @@ object AppViewModelProvider {
         }
         initializer {
             RecipeViewModel(App().container.recipeService)
+        }
+        initializer {
+            ProgressViewModel(App().container.monthlyVolumeService)
         }
     }
 }
