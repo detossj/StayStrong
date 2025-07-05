@@ -4,6 +4,7 @@ import android.content.Context
 import com.deto.staystrong.data.remote.ApiClient
 import com.deto.staystrong.data.remote.services.AuthService
 import com.deto.staystrong.data.remote.services.ExerciseService
+import com.deto.staystrong.data.remote.services.MonthlyVolumeService
 import com.deto.staystrong.data.remote.services.RecipeService
 import com.deto.staystrong.data.remote.services.RoutineExerciseService
 import com.deto.staystrong.data.remote.services.RoutineService
@@ -18,6 +19,7 @@ interface AppContainer {
     val setApiService: SetService
     val routineVideoService: RoutineVideoService
     val recipeService: RecipeService
+    val monthlyVolumeService: MonthlyVolumeService
 }
 
 class AppDataContainer(private val context: Context) : AppContainer {
@@ -48,6 +50,10 @@ class AppDataContainer(private val context: Context) : AppContainer {
 
     override val recipeService: RecipeService by lazy {
         ApiClient.create(context).create(RecipeService::class.java)
+    }
+
+    override val monthlyVolumeService: MonthlyVolumeService by lazy {
+        ApiClient.create(context).create(MonthlyVolumeService::class.java)
     }
 
 
