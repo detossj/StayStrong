@@ -49,7 +49,7 @@ class DailyReminderReceiver : BroadcastReceiver() {
         )
 
         val notification = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.icon_staystrong)
             .setContentTitle("¡Hora de entrenar!")
             .setContentText("No olvides registrar tu entrenamiento hoy.")
             .setContentIntent(pendingIntent)
