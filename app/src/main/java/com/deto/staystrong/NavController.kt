@@ -3,11 +3,14 @@ package com.deto.staystrong
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.ui.auth.AuthManager
+import com.deto.staystrong.ui.auth.AuthViewModel
 import com.deto.staystrong.ui.auth.LoginScreen
 import com.deto.staystrong.ui.auth.RegisterScreen
 import com.deto.staystrong.ui.exercise.ExerciseListScreen
@@ -65,6 +68,10 @@ fun Navigation() {
 
     val navController = rememberNavController()
 
+    val authViewModel: AuthViewModel = viewModel(factory = AppViewModelProvider.Factory)
+
+    val userId = authViewModel.userData?.id ?: 0
+
     NavHost(navController = navController, startDestination = AuthManager) {
 
         composable<AuthManager> {
@@ -90,7 +97,7 @@ fun Navigation() {
             RoutinesScreen(navController = navController)
         }
         composable<Progress> {
-            ProgressScreen(navController = navController)
+            ProgressScreen(navController = navController, userId = userId)
         }
         composable<Profile> {
             ProfileScreen(navController = navController)
