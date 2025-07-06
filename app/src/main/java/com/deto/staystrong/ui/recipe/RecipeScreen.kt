@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -69,10 +70,9 @@ fun RecipeScreen(navController: NavController, idRecipe: Int, viewModel: RecipeV
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(horizontal = 16.dp, vertical = 24.dp)
                     ) {
                         item {
-
                             val painter = rememberExerciseImagePainter(recipe.image_path)
 
                             Image(
@@ -80,24 +80,23 @@ fun RecipeScreen(navController: NavController, idRecipe: Int, viewModel: RecipeV
                                 contentDescription = recipe.title,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(200.dp)
-                                    .clip(RoundedCornerShape(16.dp))
+                                    .height(220.dp)
+                                    .clip(RoundedCornerShape(16.dp)),
+                                contentScale = ContentScale.Crop
                             )
 
-                            Spacer(modifier = Modifier.padding(8.dp))
-
+                            Spacer(modifier = Modifier.height(16.dp))
 
                             Text(
                                 text = recipe.title,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold,
+                                fontSize = 26.sp,
+                                fontWeight = FontWeight.SemiBold,
                                 color = Color.White,
                                 textAlign = TextAlign.Start,
                                 modifier = Modifier.fillMaxWidth()
                             )
 
-                            Spacer(modifier = Modifier.padding(4.dp))
-
+                            Spacer(modifier = Modifier.height(8.dp))
 
                             Text(
                                 text = recipe.description,
@@ -105,17 +104,16 @@ fun RecipeScreen(navController: NavController, idRecipe: Int, viewModel: RecipeV
                                 color = Color.LightGray
                             )
 
-                            Spacer(modifier = Modifier.padding(8.dp))
-
+                            Spacer(modifier = Modifier.height(12.dp))
 
                             Text(
                                 text = "Calorías: ${recipe.calories}",
-                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
                                 color = Color.White
                             )
 
-                            Spacer(modifier = Modifier.padding(8.dp))
-
+                            Spacer(modifier = Modifier.height(24.dp))
 
                             Text(
                                 text = "Ingredientes",
@@ -124,20 +122,20 @@ fun RecipeScreen(navController: NavController, idRecipe: Int, viewModel: RecipeV
                                 color = Color.White
                             )
 
-                            Spacer(modifier = Modifier.padding(4.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
-
 
                         items(ingredientsList.size) { index ->
                             Text(
                                 text = "• ${ingredientsList[index]}",
-                                color = Color.LightGray,
+                                color = Color(0xFFCCCCCC),
+                                fontSize = 15.sp,
                                 modifier = Modifier.padding(vertical = 2.dp)
                             )
                         }
 
                         item {
-                            Spacer(modifier = Modifier.padding(12.dp))
+                            Spacer(modifier = Modifier.height(24.dp))
 
                             Text(
                                 text = "Pasos",
@@ -146,17 +144,21 @@ fun RecipeScreen(navController: NavController, idRecipe: Int, viewModel: RecipeV
                                 color = Color.White
                             )
 
-                            Spacer(modifier = Modifier.padding(4.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
 
                         items(stepsList.size) { index ->
                             Text(
                                 text = "${index + 1}. ${stepsList[index]}",
-                                color = Color.LightGray,
-                                modifier = Modifier.padding(vertical = 2.dp)
+                                color = Color(0xFFCCCCCC),
+                                fontSize = 15.sp,
+                                modifier = Modifier.padding(vertical = 4.dp)
                             )
                         }
+
+                        item { Spacer(modifier = Modifier.height(80.dp)) }
                     }
+
                 }
 
                 else -> {}
