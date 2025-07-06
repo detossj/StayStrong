@@ -55,6 +55,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -145,7 +146,6 @@ fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseV
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
     ) {
 
 
@@ -231,7 +231,7 @@ fun ExerciseCard(exercise: Exercise, exercisesListFilter: String, onClick: () ->
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(12.dp))
-            .background(Color.Gray)
+            .background(Color(0xFF2A2A2A))
             .clickable { onClick() }
             .padding(16.dp)
             .width(160.dp)
@@ -254,14 +254,18 @@ fun ExerciseCard(exercise: Exercise, exercisesListFilter: String, onClick: () ->
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
             color = Color.White,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
         )
         Text(
             text = highlightMatch(exercise.description,exercisesListFilter,Color(0xFFFF9800)),
             fontSize = 14.sp,
             fontWeight = FontWeight.Normal,
             color = Color.White,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }
