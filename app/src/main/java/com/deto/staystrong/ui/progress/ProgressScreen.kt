@@ -32,10 +32,12 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.Button
 import androidx.compose.runtime.*
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalDensity
+import com.deto.staystrong.Calculator
 import com.deto.staystrong.model.SimpleBarData
 
 
@@ -102,6 +104,36 @@ fun ProgressScreen(navController: NavController, userId: Int, viewModel: Progres
                                 color = Color.White,
                                 modifier = Modifier.padding(bottom = 8.dp) // espacio debajo del texto
                             )
+
+                            Spacer(Modifier.padding(30.dp))
+
+
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 16.dp)
+                            ) {
+                                Text(
+                                    text = "¿Sabes cuál es tu gasto calórico basal?",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color.White,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                Button(
+                                    onClick = { navController.navigate(Calculator) },
+                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                ) {
+                                    Text("Calcular calorías")
+                                }
+                            }
+
+
                         }
                     }
 
