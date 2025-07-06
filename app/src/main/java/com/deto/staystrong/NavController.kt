@@ -13,6 +13,7 @@ import com.deto.staystrong.ui.auth.AuthManager
 import com.deto.staystrong.ui.auth.AuthViewModel
 import com.deto.staystrong.ui.auth.LoginScreen
 import com.deto.staystrong.ui.auth.RegisterScreen
+import com.deto.staystrong.ui.calculator.CalculatorScreen
 import com.deto.staystrong.ui.exercise.ExerciseListScreen
 import com.deto.staystrong.ui.home.HomeScreen
 import com.deto.staystrong.ui.profile.ProfileScreen
@@ -48,6 +49,9 @@ object Routines
 
 @Serializable
 object Progress
+
+@Serializable
+object Calculator
 
 @Serializable
 object Profile
@@ -98,6 +102,9 @@ fun Navigation() {
         }
         composable<Progress> {
             ProgressScreen(navController = navController, userId = userId)
+        }
+        composable<Calculator> {
+            CalculatorScreen(navController = navController)
         }
         composable<Profile> {
             ProfileScreen(navController = navController)
