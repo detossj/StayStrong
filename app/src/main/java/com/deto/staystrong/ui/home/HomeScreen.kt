@@ -23,7 +23,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -37,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.deto.staystrong.Routines
 import com.deto.staystrong.model.RoutineVideo
 import com.deto.staystrong.ui.components.CustomBottomAppBar
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
@@ -83,7 +83,7 @@ fun HomeScreen(navController: NavController, userName: String, viewModel: Routin
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Button(
-                    onClick = { /* TODO */ },
+                    onClick = { navController.navigate(Routines) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
