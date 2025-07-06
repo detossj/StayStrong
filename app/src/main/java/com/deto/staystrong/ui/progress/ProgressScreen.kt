@@ -31,10 +31,13 @@ import com.deto.staystrong.model.MonthlyVolume
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.*
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalDensity
@@ -94,18 +97,40 @@ fun ProgressScreen(navController: NavController, userId: Int, viewModel: Progres
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
 
-                            AnimatedBarChart(
-                                volumes = uiState.monthlyVolumes,
-                                modifier = Modifier.fillMaxWidth()
-                            )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(Color(0xFF1E1E1E))
+                                    .padding(16.dp)
+                            ) {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-                            Text(
-                                text = "Volumen de entrenamiento mensual",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Color.White,
-                                modifier = Modifier.padding(bottom = 8.dp) // espacio debajo del texto
-                            )
+                                    if (uiState.monthlyVolumes.isEmpty()) {
+                                        Text(
+                                            text = "No hay datos registrados aún.",
+                                            color = Color.LightGray,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(vertical = 16.dp)
+                                        )
+                                    } else {
+                                        AnimatedBarChart(volumes = uiState.monthlyVolumes, modifier = Modifier.fillMaxWidth())
+                                    }
+
+
+                                    Text(
+                                        text = "Volumen de entrenamiento mensual",
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color.LightGray,
+                                        modifier = Modifier.padding(top = 12.dp)
+                                    )
+                                }
+                            }
+
 
                             Spacer(Modifier.padding(30.dp))
 
@@ -114,7 +139,7 @@ fun ProgressScreen(navController: NavController, userId: Int, viewModel: Progres
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(top = 16.dp)
+                                    .padding(16.dp)
                             ) {
                                 Text(
                                     text = "¿Sabes cuál es tu gasto calórico basal?",
