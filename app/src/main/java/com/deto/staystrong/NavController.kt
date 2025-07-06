@@ -121,7 +121,7 @@ fun Navigation() {
         }
         composable<Set> { backStackEntry ->
             val args = backStackEntry.toRoute<Set>()
-            SetScreen(idRoutine = args.idRoutine, idRoutineExercise = args.idRoutineExercise, nameExercise = args.nameExercise)
+            SetScreen(navController = navController, idRoutine = args.idRoutine, idRoutineExercise = args.idRoutineExercise, nameExercise = args.nameExercise)
         }
 
 

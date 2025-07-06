@@ -41,6 +41,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import coil.request.CachePolicy
@@ -65,6 +66,7 @@ import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.model.Exercise
 import coil.imageLoader
 import com.deto.staystrong.data.remote.ApiClient.BASE_URL
+import com.deto.staystrong.ui.components.CustomBottomAppBar
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 import com.deto.staystrong.ui.routineExercise.RoutineExerciseViewModel
 import java.text.Normalizer
@@ -78,24 +80,40 @@ fun ExerciseListScreen(navController: NavController, idRoutine: Int) {
 
     var selectedExercise by remember { mutableStateOf<Exercise?>(null) }
 
-    AnimatedContent(
-        targetState = selectedExercise,
-        transitionSpec = {
-            fadeIn(tween(300)) + scaleIn(tween(300)) with
-                    fadeOut(tween(300)) + scaleOut(tween(300))
-        },
-    ) { exercise ->
-        if (exercise == null) {
-            ExerciseGridScreen(onExerciseClick = { selectedExercise = it })
-        } else {
-            ExpandedMuscleView(
-                navController = navController,
-                idRoutine = idRoutine,
-                exercise = exercise,
-                onBack = { selectedExercise = null }
-            )
+    Scaffold(
+        bottomBar = {
+            CustomBottomAppBar(navController)
+        }
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                AnimatedContent(
+                    targetState = selectedExercise,
+                    transitionSpec = {
+                        fadeIn(tween(300)) + scaleIn(tween(300)) with
+                                fadeOut(tween(300)) + scaleOut(tween(300))
+                    },
+                ) { exercise ->
+                    if (exercise == null) {
+                        ExerciseGridScreen(onExerciseClick = { selectedExercise = it })
+                    } else {
+                        ExpandedMuscleView(
+                            navController = navController,
+                            idRoutine = idRoutine,
+                            exercise = exercise,
+                            onBack = { selectedExercise = null }
+                        )
+                    }
+                }
+            }
         }
     }
+
+
 }
 
 @Composable

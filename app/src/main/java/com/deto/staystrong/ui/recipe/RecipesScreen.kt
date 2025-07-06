@@ -65,13 +65,14 @@ fun RecipesScreen(navController : NavController, viewModel: RecipesViewModel = v
                     .fillMaxWidth()
                     .padding(10.dp)
             ) {
+
                 Text(
                     text = "Recetas Fit",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
                     modifier = Modifier
-                        .padding(top = 70.dp, bottom = 16.dp)
+                        .padding(top = 50.dp, bottom = 16.dp)
                         .padding(horizontal = 16.dp),
                     textAlign = TextAlign.Center
                 )

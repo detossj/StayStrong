@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.deto.staystrong.Calculator
 import com.deto.staystrong.model.UserUpdateRequest
 
 import com.deto.staystrong.ui.AppViewModelProvider
@@ -85,7 +86,7 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel = viewM
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
                     modifier = Modifier
-                        .padding(top = 70.dp, bottom = 16.dp)
+                        .padding(top = 50.dp, bottom = 16.dp)
                         .padding(horizontal = 16.dp),
                     textAlign = TextAlign.Center
                 )
@@ -229,11 +230,20 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel = viewM
                             }
                             isEditable = !isEditable
                         },
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White,
+                            contentColor = Color.Black
+                        )
                     ) {
-                        Text(if (isEditable) "Guardar" else "Modificar perfil")
+                        Text(
+                            text = if (isEditable) "Guardar" else "Modificar perfil",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
-
 
                 }
 

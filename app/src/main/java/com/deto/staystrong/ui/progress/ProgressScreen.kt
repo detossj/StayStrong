@@ -33,11 +33,13 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalDensity
 import com.deto.staystrong.Calculator
+import com.deto.staystrong.Routines
 import com.deto.staystrong.model.SimpleBarData
 
 
@@ -70,7 +72,7 @@ fun ProgressScreen(navController: NavController, userId: Int, viewModel: Progres
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
                     modifier = Modifier
-                        .padding(top = 70.dp, bottom = 16.dp)
+                        .padding(top = 50.dp, bottom = 16.dp)
                         .padding(horizontal = 16.dp),
                     textAlign = TextAlign.Center
                 )
@@ -116,20 +118,32 @@ fun ProgressScreen(navController: NavController, userId: Int, viewModel: Progres
                             ) {
                                 Text(
                                     text = "¿Sabes cuál es tu gasto calórico basal?",
-                                    fontSize = 18.sp,
+                                    fontSize = 20.sp,
                                     fontWeight = FontWeight.SemiBold,
                                     color = Color.White,
                                     textAlign = TextAlign.Center,
-                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                    modifier = Modifier
+                                        .padding(horizontal = 16.dp)
+                                        .padding(bottom = 10.dp)
                                 )
 
                                 Spacer(modifier = Modifier.height(8.dp))
 
                                 Button(
                                     onClick = { navController.navigate(Calculator) },
-                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(50.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color.White,
+                                        contentColor = Color.Black
+                                    )
                                 ) {
-                                    Text("Calcular calorías")
+                                    Text(
+                                        text = "Calcular calorías",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
                                 }
                             }
 

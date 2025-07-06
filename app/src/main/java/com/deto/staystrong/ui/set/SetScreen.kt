@@ -25,12 +25,12 @@ import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 import com.deto.staystrong.R
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-
-
+import androidx.navigation.NavController
+import com.deto.staystrong.ui.components.CustomBottomAppBar
 
 
 @Composable
-fun SetScreen(idRoutine: Int, idRoutineExercise: Int , nameExercise: String, viewModel: SetViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun SetScreen(navController: NavController, idRoutine: Int, idRoutineExercise: Int , nameExercise: String, viewModel: SetViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
 
 
     LaunchedEffect(Unit) {
@@ -40,7 +40,9 @@ fun SetScreen(idRoutine: Int, idRoutineExercise: Int , nameExercise: String, vie
     val uiState = viewModel.setUiState
 
     Scaffold(
-        modifier = Modifier.fillMaxSize()
+        bottomBar = {
+            CustomBottomAppBar(navController)
+        }
     ) { innerPadding ->
 
         Column(

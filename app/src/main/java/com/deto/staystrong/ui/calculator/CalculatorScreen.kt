@@ -219,6 +219,7 @@ fun CalculatorScreen(navController: NavController) {
                 Column(
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
+                        .padding(top = 30.dp)
                         .fillMaxWidth()
                 ) {
                     TextButton(
@@ -239,16 +240,17 @@ fun CalculatorScreen(navController: NavController) {
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 56.dp),
+                            .height(50.dp),
                         colors = ButtonDefaults.buttonColors(
-                            contentColor = Color.White,
-                            containerColor = Color(0xFFCCCCCC),
-                            disabledContentColor = Color(0xFFAAAAAA),
-                            disabledContainerColor = Color(0xFF1E1E1E)
-                        ),
-                        shape = RoundedCornerShape(10.dp)
+                            containerColor = Color.White,
+                            contentColor = Color.Black
+                        )
                     ) {
-                        Text("Calcular Calorías")
+                        Text(
+                            text = "Calcular Calorías",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
 
                     if (resultadoCalorias != null) {
