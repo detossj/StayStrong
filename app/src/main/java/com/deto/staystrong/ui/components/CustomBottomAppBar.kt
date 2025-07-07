@@ -19,16 +19,26 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.deto.staystrong.Calculator
 import com.deto.staystrong.Home
 import com.deto.staystrong.Profile
 import com.deto.staystrong.Progress
-import com.deto.staystrong.R
 import com.deto.staystrong.Recipes
+import com.deto.staystrong.R
 import com.deto.staystrong.Routines
+import com.deto.staystrong.Recipe
+import com.deto.staystrong.Routine
+import com.deto.staystrong.ExerciseList
+import com.deto.staystrong.Set
 
 
 @Composable
 fun CustomBottomAppBar(navController: NavController) {
+    val navBackStackEntry = navController.currentBackStackEntryAsState()
+
+    val currentDestinationRoute = navBackStackEntry.value?.destination?.route
+
     BottomAppBar(
         modifier = Modifier.fillMaxWidth(),
         containerColor = Color.Black
@@ -37,19 +47,41 @@ fun CustomBottomAppBar(navController: NavController) {
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
+
             val items = listOf(
-                Triple(R.drawable.home_24px, "Inicio", Home),
-                Triple(R.drawable.nutrition_24px, "Recetas", Recipes),
-                Triple(R.drawable.add_circle_24px, "Entrenar", Routines),
-                Triple(R.drawable.show_chart_24px, "Progreso", Progress),
-                Triple(R.drawable.account_circle_24px, "Tú", Profile )
+                Triple(R.drawable.home_24px, "Inicio", Home::class.qualifiedName to listOf(Home::class.qualifiedName)),
+                Triple(R.drawable.nutrition_24px, "Recetas", Recipes::class.qualifiedName to listOf(Recipes::class.qualifiedName, Recipe::class.qualifiedName)),
+                Triple(R.drawable.add_circle_24px, "Entrenar", Routines::class.qualifiedName to listOf(Routines::class.qualifiedName, Routine::class.qualifiedName, ExerciseList::class.qualifiedName, Set::class.qualifiedName)),
+                Triple(R.drawable.show_chart_24px, "Progreso", Progress::class.qualifiedName to listOf(Progress::class.qualifiedName,Calculator::class.qualifiedName)),
+                Triple(R.drawable.account_circle_24px, "Tú", Profile::class.qualifiedName to listOf(Profile::class.qualifiedName))
             )
 
+            items.forEach { (iconRes, label, routeInfo) ->
+                val (primaryRouteQualifiedName, associatedRoutesQualifiedNames) = routeInfo
 
-            items.forEach { (iconRes, label, route) ->
+                val isSelected = currentDestinationRoute != null && associatedRoutesQualifiedNames.any {
+                    currentDestinationRoute.startsWith(it.toString())
+                }
+
+
+                val selectedColor = Color.White
+                val unselectedColor = Color.Gray
+
+                val itemColor = if (isSelected) selectedColor else unselectedColor
+
                 Button(
                     onClick = {
-                        navController.navigate(route)
+                        navController.navigate(primaryRouteQualifiedName.toString()) {
+
+                            navController.graph.startDestinationRoute?.let { route ->
+                                popUpTo(route) {
+                                    saveState = true
+                                }
+                            }
+
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     },
                     modifier = Modifier
                         .weight(1f)
@@ -62,12 +94,12 @@ fun CustomBottomAppBar(navController: NavController) {
                             painter = painterResource(iconRes),
                             contentDescription = label,
                             modifier = Modifier.size(20.dp),
-                            tint = Color.White
+                            tint = itemColor
                         )
                         Text(
                             text = label,
                             fontSize = 12.sp,
-                            color = Color.White
+                            color = itemColor
                         )
                     }
                 }
@@ -75,4 +107,3 @@ fun CustomBottomAppBar(navController: NavController) {
         }
     }
 }
-
