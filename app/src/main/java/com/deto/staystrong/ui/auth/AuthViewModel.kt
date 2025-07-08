@@ -47,6 +47,7 @@ class AuthViewModel(
 
                 val response = authService.login(LoginRequest(email, password))
                 TokenManager.saveToken(context, response.token)
+                getProfile()
                 authState = AuthUiState.Success(response.token)
 
             } catch (e: Exception) {
@@ -67,6 +68,7 @@ class AuthViewModel(
 
                 val response = authService.register(RegisterRequest( name, email, password, validationPassword ))
                 TokenManager.saveToken(context, response.token)
+                getProfile()
                 authState = AuthUiState.Success(response.token)
 
 
