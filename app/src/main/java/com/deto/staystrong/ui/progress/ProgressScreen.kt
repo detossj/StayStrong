@@ -44,17 +44,21 @@ import androidx.compose.ui.platform.LocalDensity
 import com.deto.staystrong.Calculator
 import com.deto.staystrong.Routines
 import com.deto.staystrong.model.SimpleBarData
+import com.deto.staystrong.ui.auth.AuthViewModel
 
 
 @Composable
-fun ProgressScreen(navController: NavController, userId: Int, viewModel: ProgressViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun ProgressScreen(navController: NavController, viewModel: ProgressViewModel = viewModel(factory = AppViewModelProvider.Factory), authViewModel: AuthViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     val uiState = viewModel.monthlyVolumesUiState
 
-    LaunchedEffect(Unit) {
-        if (userId != 0) {
-            viewModel.refreshMonthlyVolumes(userId)
-        }
+    val userData = authViewModel.userData
+    val userId = userData?.id ?: return
+
+
+    LaunchedEffect(userId) {
+        viewModel.getMonthlyVolumes(userId)
     }
+
 
     Scaffold(
         bottomBar = {

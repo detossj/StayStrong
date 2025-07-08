@@ -72,11 +72,6 @@ fun Navigation() {
 
     val navController = rememberNavController()
 
-    val authViewModel: AuthViewModel = viewModel(factory = AppViewModelProvider.Factory)
-
-    val userId = authViewModel.userData?.id ?: 0
-
-    val userName = authViewModel.userData?.name ?: ""
 
     NavHost(navController = navController, startDestination = AuthManager) {
 
@@ -90,7 +85,7 @@ fun Navigation() {
             RegisterScreen(navController = navController)
         }
         composable<Home> {
-            HomeScreen(navController = navController, userName = userName)
+            HomeScreen(navController = navController)
         }
         composable<Recipes> {
             RecipesScreen(navController = navController)
@@ -103,7 +98,7 @@ fun Navigation() {
             RoutinesScreen(navController = navController)
         }
         composable<Progress> {
-            ProgressScreen(navController = navController, userId = userId)
+            ProgressScreen(navController = navController)
         }
         composable<Calculator> {
             CalculatorScreen(navController = navController)

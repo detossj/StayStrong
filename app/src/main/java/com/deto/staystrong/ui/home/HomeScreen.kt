@@ -38,13 +38,16 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.deto.staystrong.Routines
 import com.deto.staystrong.model.RoutineVideo
+import com.deto.staystrong.ui.auth.AuthViewModel
 import com.deto.staystrong.ui.components.CustomBottomAppBar
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 
 @Composable
-fun HomeScreen(navController: NavController, userName: String, viewModel: RoutineVideoViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun HomeScreen(navController: NavController, viewModel: RoutineVideoViewModel = viewModel(factory = AppViewModelProvider.Factory), authViewModel: AuthViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     val uiState = viewModel.routineVideoUiState
 
+    val userData = authViewModel.userData
+    val userName = userData?.name ?: return
     LaunchedEffect(Unit) {
         viewModel.refreshRoutineVideos()
     }
