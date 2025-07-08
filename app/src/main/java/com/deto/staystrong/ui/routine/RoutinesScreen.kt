@@ -49,7 +49,7 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
     }
 
     val uiState = viewModel.routinesUiState
-
+    val showDefaultDialog = remember { mutableStateOf(false) }
     var selected by remember { mutableIntStateOf(0) }
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     val showCalendarDialog = remember { mutableStateOf(false) }
@@ -64,7 +64,16 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
 
     Scaffold(
         floatingActionButton = {
-            CustomFloatingActionButton({ viewModel.addRoutine(selectedDate)})
+            Column {
+                FloatingActionButton(
+                    onClick = { showDefaultDialog.value = true },
+                    containerColor = Color(0xFF4CAF50)
+                ) {
+                    Text("DEFAULT")
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+                CustomFloatingActionButton { viewModel.addRoutine(selectedDate) }
+            }
         },
         bottomBar = { CustomBottomAppBar(navController) }
     ) { innerPadding ->
@@ -229,29 +238,67 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
         }
     }
 
-    if (showCalendarDialog.value) {
+    if (showDefaultDialog.value) {
+        var selectedType by remember { mutableStateOf("full_body") }
+        var selectedMuscle by remember { mutableStateOf("") }
+
         AlertDialog(
-            containerColor = Color.White,
-            shape = RoundedCornerShape(16.dp),
-            onDismissRequest = { showCalendarDialog.value = false },
+            onDismissRequest = { showDefaultDialog.value = false },
             confirmButton = {
-                TextButton(onClick = { showCalendarDialog.value = false }) {
-                    Text("OK")
+                TextButton(onClick = {
+                    if (selectedType == "mono" && selectedMuscle.isBlank()) {
+                        return@TextButton
+                    }
+
+                    viewModel.addDefaultRoutine(
+                        type = selectedType,
+                        muscleGroup = if (selectedType == "mono") selectedMuscle else null,
+                        date = selectedDate
+                    )
+                    showDefaultDialog.value = false
+                }) {
+                    Text("CREAR")
                 }
             },
-            title = { Text("Selecciona una fecha") },
+            dismissButton = {
+                TextButton(onClick = { showDefaultDialog.value = false }) {
+                    Text("CANCELAR")
+                }
+            },
+            title = { Text("Crear rutina por defecto") },
             text = {
-                AndroidView(
-                    factory = { ctx ->
-                        CalendarView(ctx).apply {
-                            date = selectedDate.toEpochDay() * 24 * 60 * 60 * 1000
-                            setOnDateChangeListener { _, year, month, day ->
-                                selectedDate = LocalDate.of(year, month + 1, day)
-                            }
-                        }
+                Column {
+                    Text("Tipo de rutina:")
+                    Row {
+                        RadioButton(
+                            selected = selectedType == "full_body",
+                            onClick = { selectedType = "full_body" }
+                        )
+                        Text("Full Body")
+
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        RadioButton(
+                            selected = selectedType == "mono",
+                            onClick = { selectedType = "mono" }
+                        )
+                        Text("Mono-muscular")
                     }
-                )
-            }
+
+                    if (selectedType == "mono") {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        OutlinedTextField(
+                            value = selectedMuscle,
+                            onValueChange = { selectedMuscle = it },
+                            label = { Text("Grupo muscular") },
+                            singleLine = true
+                        )
+                    }
+                }
+            },
+            containerColor = Color.White,
+            shape = RoundedCornerShape(16.dp)
         )
     }
+
 }
