@@ -18,6 +18,6 @@ interface RoutineService {
     suspend fun getRoutineById(@Path("id") id: Int): Routine
 
     @POST("api/routines/default")
-    suspend fun addDefaultRoutine(): Routine
+    suspend fun addDefaultRoutine(@Body routine: Routine): Routine
 
 }
