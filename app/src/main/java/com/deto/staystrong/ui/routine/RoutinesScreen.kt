@@ -239,20 +239,15 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
     }
 
     if (showDefaultDialog.value) {
-        var selectedType by remember { mutableStateOf("full_body") }
-        var selectedMuscle by remember { mutableStateOf("") }
+        var selectedType by remember { mutableStateOf("Pecho") }
 
         AlertDialog(
             onDismissRequest = { showDefaultDialog.value = false },
             confirmButton = {
                 TextButton(onClick = {
-                    if (selectedType == "mono" && selectedMuscle.isBlank()) {
-                        return@TextButton
-                    }
 
                     viewModel.addDefaultRoutine(
                         type = selectedType,
-                        muscleGroup = if (selectedType == "mono") selectedMuscle else null,
                         date = selectedDate
                     )
                     showDefaultDialog.value = false
@@ -267,38 +262,29 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
             },
             title = { Text("Crear rutina por defecto") },
             text = {
+                val categories = listOf("Pecho", "Piernas", "Brazos", "Espalda", "Hombros", "Abdomen")
                 Column {
                     Text("Tipo de rutina:")
-                    Row {
-                        RadioButton(
-                            selected = selectedType == "full_body",
-                            onClick = { selectedType = "full_body" }
-                        )
-                        Text("Full Body")
-
-                        Spacer(modifier = Modifier.width(16.dp))
-
-                        RadioButton(
-                            selected = selectedType == "mono",
-                            onClick = { selectedType = "mono" }
-                        )
-                        Text("Mono-muscular")
-                    }
-
-                    if (selectedType == "mono") {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        OutlinedTextField(
-                            value = selectedMuscle,
-                            onValueChange = { selectedMuscle = it },
-                            label = { Text("Grupo muscular") },
-                            singleLine = true
-                        )
+                    categories.forEach { category ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { selectedType = category }
+                                .padding(vertical = 4.dp)
+                        ) {
+                            RadioButton(
+                                selected = selectedType == category,
+                                onClick = { selectedType = category }
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(text = category.replace("_", " ").capitalize())
+                        }
                     }
                 }
-            },
-            containerColor = Color.White,
-            shape = RoundedCornerShape(16.dp)
+            }
         )
+
     }
 
 }
