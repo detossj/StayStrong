@@ -2,6 +2,7 @@ package com.deto.staystrong.ui.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -13,24 +14,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.deto.staystrong.Calculator
+import com.deto.staystrong.Login
 import com.deto.staystrong.model.UserUpdateRequest
-
 import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.ui.auth.AuthUiState
 import com.deto.staystrong.ui.auth.AuthViewModel
 import com.deto.staystrong.ui.components.CustomBottomAppBar
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 import java.util.Calendar
-
 import java.text.SimpleDateFormat
 import java.util.Locale
+import com.deto.staystrong.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,10 +44,19 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel = viewM
     var editableProfile by remember { mutableStateOf(EditableProfile()) }
 
 
+    val authViewModel: AuthViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
     LaunchedEffect(Unit) {
         viewModel.getProfile()
     }
+    LaunchedEffect(authState) {
+        if (authState is AuthUiState.Idle) {
+            navController.navigate(Login) {
+                popUpTo("profile") { inclusive = true }
+            }
+        }
+    }
+
 
 
     if (viewModel.userData != null && editableProfile.name.isBlank()) {
@@ -80,16 +90,40 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel = viewM
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                Text(
-                    text = "Perfil",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
+                Row(
                     modifier = Modifier
-                        .padding(top = 50.dp, bottom = 16.dp)
-                        .padding(horizontal = 16.dp),
-                    textAlign = TextAlign.Center
-                )
+                        .fillMaxWidth()
+                        .padding(top = 50.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Perfil",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+
+                    TextButton(
+                        onClick = { authViewModel.logout() },
+                        modifier = Modifier.height(40.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.logout_24px),
+                            contentDescription = "Cerrar sesión",
+                            tint = Color.Red,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = "Cerrar sesión",
+                            color = Color.Red,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+
 
                 if (authState is AuthUiState.Loading) {
                     Box(
@@ -251,6 +285,8 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel = viewM
                 if (authState is AuthUiState.Error) {
                     Text("Error: ${authState.message}", color = Color.Red)
                 }
+
+
 
             }
         }
