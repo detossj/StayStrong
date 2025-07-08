@@ -6,5 +6,4 @@ data class Routine(
     val user_id: Int,
     val date: String,
     val type: String,
-    val muscle_group: String?
 )
