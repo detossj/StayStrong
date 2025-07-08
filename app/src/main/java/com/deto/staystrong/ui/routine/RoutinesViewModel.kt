@@ -38,7 +38,7 @@ class RoutinesViewModel(private val routineService: RoutineService) : ViewModel(
         routinesUiState = RoutinesUiState.Loading
         viewModelScope.launch {
             try {
-                routineService.addRoutine(Routine(0,0,date.toString(),"fullbody",null))
+                routineService.addRoutine(Routine(0,0,date.toString(),"full_body"))
                 val updatedList = routineService.getRoutines()
                 routinesUiState = RoutinesUiState.Success(updatedList)
             }
@@ -51,16 +51,13 @@ class RoutinesViewModel(private val routineService: RoutineService) : ViewModel(
     fun refreshRoutines() {
         getRoutines()
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
-    fun addDefaultRoutine(type: String, muscleGroup: String? = null, date: LocalDate = LocalDate.now()) {
+    fun addDefaultRoutine(type: String, date: LocalDate = LocalDate.now()) {
         routinesUiState = RoutinesUiState.Loading
         viewModelScope.launch {
             try {
-                // Envía al endpoint /routines/default
-                routineService.addDefaultRoutine(
-                    Routine(0,0,date.toString(),type,muscleGroup)
-                )
-
+                routineService.addDefaultRoutine(Routine(0, 0, date.toString(), type))
                 val updatedList = routineService.getRoutines()
                 routinesUiState = RoutinesUiState.Success(updatedList)
             } catch (e: Exception) {
@@ -68,4 +65,6 @@ class RoutinesViewModel(private val routineService: RoutineService) : ViewModel(
             }
         }
     }
+
+
 }
