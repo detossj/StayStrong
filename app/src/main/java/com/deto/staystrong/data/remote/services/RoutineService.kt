@@ -14,10 +14,7 @@ interface RoutineService {
     @POST("api/routines")
     suspend fun addRoutine(@Body routine: Routine): Routine
 
-    @GET("api/routines/{id}")
-    suspend fun getRoutineById(@Path("id") id: Int): Routine
-
     @POST("api/routines/default")
-    suspend fun addDefaultRoutine(@Body routine: Routine): Routine
+    suspend fun addDefaultRoutine(@Body routine: Routine)
 
 }
