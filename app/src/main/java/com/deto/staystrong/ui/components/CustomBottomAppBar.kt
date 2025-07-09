@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -56,11 +57,11 @@ fun CustomBottomAppBar(navController: NavController) {
             ) {
 
                 val items = listOf(
-                    Triple(R.drawable.home_24px, "Inicio", Home::class.qualifiedName to listOf(Home::class.qualifiedName)),
-                    Triple(R.drawable.nutrition_24px, "Recetas", Recipes::class.qualifiedName to listOf(Recipes::class.qualifiedName, Recipe::class.qualifiedName)),
-                    Triple(R.drawable.add_circle_24px, "Entrenar", Routines::class.qualifiedName to listOf(Routines::class.qualifiedName, Routine::class.qualifiedName, ExerciseList::class.qualifiedName, Set::class.qualifiedName)),
-                    Triple(R.drawable.show_chart_24px, "Progreso", Progress::class.qualifiedName to listOf(Progress::class.qualifiedName,Calculator::class.qualifiedName)),
-                    Triple(R.drawable.account_circle_24px, "Tú", Profile::class.qualifiedName to listOf(Profile::class.qualifiedName))
+                    Triple(R.drawable.home_24px, stringResource(R.string.customBottomAppBar_inicio), Home::class.qualifiedName to listOf(Home::class.qualifiedName)),
+                    Triple(R.drawable.nutrition_24px, stringResource(R.string.customBottomAppBar_recetas), Recipes::class.qualifiedName to listOf(Recipes::class.qualifiedName, Recipe::class.qualifiedName)),
+                    Triple(R.drawable.add_circle_24px, stringResource(R.string.customBottomAppBar_recetas), Routines::class.qualifiedName to listOf(Routines::class.qualifiedName, Routine::class.qualifiedName, ExerciseList::class.qualifiedName, Set::class.qualifiedName)),
+                    Triple(R.drawable.show_chart_24px, stringResource(R.string.customBottomAppBar_progreso), Progress::class.qualifiedName to listOf(Progress::class.qualifiedName,Calculator::class.qualifiedName)),
+                    Triple(R.drawable.account_circle_24px, stringResource(R.string.customBottomAppBar_tu), Profile::class.qualifiedName to listOf(Profile::class.qualifiedName))
                 )
 
                 items.forEach { (iconRes, label, routeInfo) ->
@@ -69,7 +70,6 @@ fun CustomBottomAppBar(navController: NavController) {
                     val isSelected = currentDestinationRoute != null && associatedRoutesQualifiedNames.any {
                         currentDestinationRoute.startsWith(it.toString())
                     }
-
 
                     val selectedColor = Color.White
                     val unselectedColor = Color.Gray
