@@ -66,5 +66,18 @@ class RoutinesViewModel(private val routineService: RoutineService) : ViewModel(
         }
     }
 
+    fun deleteRoutine(routineId: Int) {
+        routinesUiState = RoutinesUiState.Loading
+        viewModelScope.launch {
+            try {
+                routineService.deleteRoutine(routineId)
+                val updatedList = routineService.getRoutines()
+                routinesUiState = RoutinesUiState.Success(updatedList)
+            } catch (e: Exception) {
+                routinesUiState = RoutinesUiState.Error("Error al eliminar rutina: ${e.message}")
+            }
+        }
+    }
+
 
 }
