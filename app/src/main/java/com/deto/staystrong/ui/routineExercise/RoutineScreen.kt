@@ -109,9 +109,15 @@ fun RoutineScreen( navController: NavController, idRoutine: Int , formattedDate:
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text("No hay ejercicios en esta rutina.", style = MaterialTheme.typography.bodyLarge)
+                            Text(
+                                text = "No hay ejercicios en esta rutina.", style = MaterialTheme.typography.bodyLarge,
+                                color = Color.White
+                            )
                             Spacer(modifier = Modifier.height(8.dp))
-                            Text("Toca el botón '+' para agregar uno.", style = MaterialTheme.typography.bodySmall)
+                            Text(
+                                text = "Toca el botón '+' para agregar uno.", style = MaterialTheme.typography.bodySmall,
+                                color = Color.White
+                            )
                         }
                     }
                     LazyColumn(
