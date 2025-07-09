@@ -54,7 +54,8 @@ fun CalculatorScreen(navController: NavController) {
     Scaffold(
         bottomBar = {
             CustomBottomAppBar(navController)
-        }
+        },
+        containerColor = Color.Black
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
 
