@@ -102,17 +102,6 @@ class AuthViewModel(
         viewModelScope.launch {
             authState = AuthUiState.Loading
             try {
-//                val token = TokenManager.getToken(context)
-//                if (token != null) {
-//                    // Opción rápida: Confiar en el token local ( funciona para login persistente )
-//                    authState = AuthUiState.loggedIn(true)
-//
-//
-//
-//                } else {
-//                    authState = AuthUiState.loggedIn(false)
-//                }
-
                 val response = authService.getUser();
                 userData = response
                 authState = AuthUiState.loggedIn(true)

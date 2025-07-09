@@ -26,14 +26,14 @@ fun AuthManager(navController: NavHostController, viewModel: AuthViewModel = vie
                     navController.navigate(Home) {
                         popUpTo(AuthManager) {
                             inclusive = true
-                        } // Quitar la pantalla de la pila de navegación
+                        }
                     }
                 }
                 if (!authState.logged) {
                     navController.navigate(Login) {
                         popUpTo(AuthManager) {
                             inclusive = true
-                        } // Quitar la pantalla de la pila de navegación
+                        }
                     }
                 }
             }
