@@ -116,7 +116,8 @@ fun SetScreen(navController: NavController, idRoutine: Int, idRoutineExercise: I
                                             leadingIcon = {
                                                 Icon(
                                                     painter = painterResource(R.drawable.exercise_24px),
-                                                    contentDescription = null
+                                                    contentDescription = "reps",
+                                                    tint = Color.White
                                                 )
                                             },
                                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -139,7 +140,8 @@ fun SetScreen(navController: NavController, idRoutine: Int, idRoutineExercise: I
                                             leadingIcon = {
                                                 Icon(
                                                     painter = painterResource(R.drawable.weight_24px),
-                                                    contentDescription = null
+                                                    contentDescription = "weight",
+                                                    tint = Color.White
                                                 )
                                             },
                                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -168,7 +170,7 @@ fun SetScreen(navController: NavController, idRoutine: Int, idRoutineExercise: I
                                                 )
                                                 viewModel.updateSet(updatedSet, idRoutine, idRoutineExercise)
                                             },
-                                            enabled = hasChanged
+                                            enabled = hasChanged,
                                         ) {
                                             Icon(
                                                 painter = painterResource(R.drawable.save_24px),
