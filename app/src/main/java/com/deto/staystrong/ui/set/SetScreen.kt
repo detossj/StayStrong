@@ -42,7 +42,8 @@ fun SetScreen(navController: NavController, idRoutine: Int, idRoutineExercise: I
     Scaffold(
         bottomBar = {
             CustomBottomAppBar(navController)
-        }
+        },
+        containerColor = Color.Black
     ) { innerPadding ->
 
         Column(
@@ -94,7 +95,9 @@ fun SetScreen(navController: NavController, idRoutine: Int, idRoutineExercise: I
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = 8.dp),
-                                colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E)),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color(0xFF1E1E1E),
+                                    contentColor = Color.White),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                             ) {
                                 Column(
@@ -195,7 +198,9 @@ fun SetScreen(navController: NavController, idRoutine: Int, idRoutineExercise: I
                             Button(
                                 onClick = { viewModel.addSet(idRoutine, idRoutineExercise)  },
                                 modifier = Modifier
-                                    .fillMaxWidth().padding(top = 10.dp),
+                                    .padding(top = 10.dp)
+                                    .fillMaxWidth()
+                                    .height(50.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color.White,
                                     contentColor = Color.Black
@@ -207,6 +212,8 @@ fun SetScreen(navController: NavController, idRoutine: Int, idRoutineExercise: I
                                     fontWeight = FontWeight.Bold
                                 )
                             }
+
+
 
                         }
 
