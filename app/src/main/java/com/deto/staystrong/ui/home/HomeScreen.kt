@@ -55,7 +55,8 @@ fun HomeScreen(navController: NavController, viewModel: RoutineVideoViewModel = 
     Scaffold(
         bottomBar = {
             CustomBottomAppBar(navController)
-        }
+        },
+        containerColor = Color.Black
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
@@ -172,7 +173,10 @@ fun RoutineVideoCard(video: RoutineVideo) {
                 context.startActivity(intent)
             },
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF1E1E1E),
+            contentColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column {
 
