@@ -43,7 +43,8 @@ fun RecipeScreen(navController: NavController, idRecipe: Int, viewModel: RecipeV
     }
 
     Scaffold(
-        bottomBar = { CustomBottomAppBar(navController) }
+        bottomBar = { CustomBottomAppBar(navController) },
+        containerColor = Color.Black
     ) { innerPadding ->
         Box(modifier = Modifier
             .padding(innerPadding)
