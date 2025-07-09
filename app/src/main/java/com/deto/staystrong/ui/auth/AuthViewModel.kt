@@ -11,6 +11,8 @@ import kotlinx.coroutines.launch
 import com.deto.staystrong.data.remote.services.AuthService
 import com.deto.staystrong.model.LoginRequest
 import com.deto.staystrong.model.RegisterRequest
+import com.deto.staystrong.model.User
+import com.deto.staystrong.model.UserUpdateRequest
 
 sealed class AuthUiState {
     object Idle : AuthUiState()
@@ -29,6 +31,9 @@ class AuthViewModel(
     var authState: AuthUiState by mutableStateOf(AuthUiState.Idle)
         private set
 
+    var userData by mutableStateOf<User?>(null)
+        private set
+
     init {
         isLoggedIn()
     }
@@ -42,6 +47,7 @@ class AuthViewModel(
 
                 val response = authService.login(LoginRequest(email, password))
                 TokenManager.saveToken(context, response.token)
+                getProfile()
                 authState = AuthUiState.Success(response.token)
 
             } catch (e: Exception) {
@@ -62,6 +68,7 @@ class AuthViewModel(
 
                 val response = authService.register(RegisterRequest( name, email, password, validationPassword ))
                 TokenManager.saveToken(context, response.token)
+                getProfile()
                 authState = AuthUiState.Success(response.token)
 
 
@@ -91,7 +98,9 @@ class AuthViewModel(
     }
 
     private fun isLoggedIn() {
+
         viewModelScope.launch {
+            authState = AuthUiState.Loading
             try {
 //                val token = TokenManager.getToken(context)
 //                if (token != null) {
@@ -105,12 +114,44 @@ class AuthViewModel(
 //                }
 
                 val response = authService.getUser();
+                userData = response
                 authState = AuthUiState.loggedIn(true)
             } catch (e: Exception) {
                 authState = AuthUiState.loggedIn(false)
             }
         }
     }
+
+    fun getProfile() {
+        viewModelScope.launch {
+            try {
+                val user = authService.getUser()
+                userData = user
+            } catch (e: Exception) {
+                authState = AuthUiState.Error("No se pudo cargar el perfil")
+            }
+        }
+    }
+
+    fun updateProfile(updatedUser: UserUpdateRequest) {
+        viewModelScope.launch {
+            try {
+                val token = TokenManager.getToken(context)
+                if (token != null) {
+                    val response = authService.updateProfile("Bearer $token", updatedUser)
+                    userData = response.user
+                    authState = AuthUiState.loggedIn(true)
+                } else {
+                    authState = AuthUiState.Error("Token no encontrado")
+                }
+            } catch (e: Exception) {
+                authState = AuthUiState.Error("Error al actualizar el perfil: ${e.message}")
+            }
+        }
+    }
+
+
+
 
 
 }

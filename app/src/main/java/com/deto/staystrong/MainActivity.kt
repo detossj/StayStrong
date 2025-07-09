@@ -15,7 +15,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import com.deto.staystrong.ui.Notificacion.NotificationScheduler
+import com.deto.staystrong.ui.notification.NotificationScheduler
 import com.deto.staystrong.ui.theme.StayStrongTheme
 import androidx.core.content.edit
 
@@ -46,6 +46,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1001)
+            }
+        }
 
         askNotificationPermission()
         scheduleExactAlarmPermissionCheck()

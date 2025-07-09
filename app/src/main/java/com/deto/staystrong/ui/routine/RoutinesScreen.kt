@@ -1,9 +1,9 @@
 package com.deto.staystrong.ui.routine
 
 import android.os.Build
+import android.view.ContextThemeWrapper
 import android.widget.CalendarView
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,15 +24,11 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.deto.staystrong.ui.AppViewModelProvider
-import com.deto.staystrong.ui.components.CustomTopAppBar
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import com.deto.staystrong.R
 import com.deto.staystrong.Routine
 import com.deto.staystrong.ui.components.CustomBottomAppBar
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
@@ -49,7 +45,6 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
     }
 
     val uiState = viewModel.routinesUiState
-
     var selected by remember { mutableIntStateOf(0) }
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     val showCalendarDialog = remember { mutableStateOf(false) }
@@ -62,9 +57,12 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
         else -> selectedDate.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))
     }
 
+    val showRoutineTypeDialog = remember { mutableStateOf(false) }
+
+
     Scaffold(
         floatingActionButton = {
-            CustomFloatingActionButton({ viewModel.addRoutine(selectedDate)})
+            CustomFloatingActionButton({showRoutineTypeDialog.value = true})
         },
         bottomBar = { CustomBottomAppBar(navController) }
     ) { innerPadding ->
@@ -72,18 +70,9 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .background(Color.Black)
         ) {
-//            Image(
-//                painter = painterResource(id = R.drawable.routine),
-//                contentDescription = "Fondo",
-//                contentScale = ContentScale.Crop,
-//                modifier = Modifier.fillMaxSize()
-//            )
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-            )
 
 
             Column(
@@ -142,7 +131,6 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
 
                 Column(
                     modifier = Modifier
-                        .padding(innerPadding)
                         .fillMaxHeight()
                         .fillMaxWidth(),
                     verticalArrangement = Arrangement.Center,
@@ -200,8 +188,8 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
                                             },
                                         shape = RoundedCornerShape(16.dp),
                                         colors = CardDefaults.cardColors(
-                                            containerColor = Color(0xFFF2F2F2),
-                                            contentColor = Color.Black
+                                            containerColor = Color(0xFF1E1E1E),
+                                            contentColor = Color.White
                                         ),
                                         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
                                     ) {
@@ -219,9 +207,13 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
                                     }
                                 }
                             }
+
+
                         }
 
                         else -> {}
+
+
 
                     }
                 }
@@ -229,10 +221,63 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
         }
     }
 
+    if (showRoutineTypeDialog.value) {
+        var selectedType by remember { mutableStateOf<String?>(null) }
+
+        AlertDialog(
+            onDismissRequest = { showRoutineTypeDialog.value = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    showRoutineTypeDialog.value = false
+                    if (selectedType == null) {
+                        viewModel.addRoutine(selectedDate)
+                    } else {
+                        viewModel.addDefaultRoutine(
+                            type = selectedType!!,
+                            date = selectedDate
+                        )
+                    }
+                }) {
+                    Text("CREAR")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showRoutineTypeDialog.value = false }) {
+                    Text("CANCELAR")
+                }
+            },
+            title = { Text("Selecciona tipo de rutina") },
+            text = {
+                val categories = listOf("Vacía", "Pecho", "Piernas", "Brazos", "Espalda", "Hombros", "Abdomen")
+                Column {
+                    categories.forEach { category ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    selectedType = if (category == "Vacía") null else category
+                                }
+                                .padding(vertical = 4.dp)
+                        ) {
+                            RadioButton(
+                                selected = if (category == "Vacía") selectedType == null else selectedType == category,
+                                onClick = {
+                                    selectedType = if (category == "Vacía") null else category
+                                }
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(category)
+                        }
+                    }
+                }
+            }
+        )
+    }
+
+
     if (showCalendarDialog.value) {
         AlertDialog(
-            containerColor = Color.White,
-            shape = RoundedCornerShape(16.dp),
             onDismissRequest = { showCalendarDialog.value = false },
             confirmButton = {
                 TextButton(onClick = { showCalendarDialog.value = false }) {
@@ -241,17 +286,17 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
             },
             title = { Text("Selecciona una fecha") },
             text = {
-                AndroidView(
-                    factory = { ctx ->
-                        CalendarView(ctx).apply {
-                            date = selectedDate.toEpochDay() * 24 * 60 * 60 * 1000
-                            setOnDateChangeListener { _, year, month, day ->
-                                selectedDate = LocalDate.of(year, month + 1, day)
-                            }
+                AndroidView(factory = { context ->
+                    CalendarView(context).apply {
+                        setOnDateChangeListener { _, year, month, dayOfMonth ->
+                            val selected = LocalDate.of(year, month + 1, dayOfMonth)
+                            selectedDate = selected
                         }
                     }
-                )
+                })
             }
         )
     }
+
+
 }

@@ -27,9 +27,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -56,7 +58,8 @@ fun RecipesScreen(navController : NavController, viewModel: RecipesViewModel = v
     Scaffold(
         bottomBar = {
             CustomBottomAppBar(navController)
-        }
+        },
+        containerColor = Color.Black
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
 
@@ -65,13 +68,14 @@ fun RecipesScreen(navController : NavController, viewModel: RecipesViewModel = v
                     .fillMaxWidth()
                     .padding(10.dp)
             ) {
+
                 Text(
                     text = "Recetas Fit",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
                     modifier = Modifier
-                        .padding(top = 70.dp, bottom = 16.dp)
+                        .padding(top = 50.dp, bottom = 16.dp)
                         .padding(horizontal = 16.dp),
                     textAlign = TextAlign.Center
                 )
@@ -109,15 +113,16 @@ fun RecipesGrid(navController : NavController,recipes: List<Recipe>) {
         columns = GridCells.Fixed(2),
         modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp),
-        contentPadding = PaddingValues(8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+            .padding(horizontal = 12.dp),
+        contentPadding = PaddingValues(vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(recipes) { recipe ->
-            RecipeCard(navController,recipe)
+            RecipeCard(navController, recipe)
         }
     }
+
 }
 
 @Composable
@@ -125,35 +130,48 @@ fun RecipeCard(navController : NavController, recipe: Recipe) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(1f)
+            .height(220.dp)
             .clickable {
                 navController.navigate(com.deto.staystrong.Recipe(recipe.id))
             },
-        elevation = CardDefaults.cardElevation(4.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF1E1E1E),
+            contentColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        shape = RoundedCornerShape(16.dp)
     ) {
         Column(
             modifier = Modifier
-                .padding(8.dp),
+                .fillMaxSize()
+                .padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             val painter = rememberExerciseImagePainter(recipe.image_path)
 
             Image(
                 painter = painter,
                 contentDescription = recipe.title,
                 modifier = Modifier
-                    .height(100.dp)
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp))
+                    .height(120.dp)
+                    .clip(RoundedCornerShape(12.dp)),
+                contentScale = ContentScale.Crop
             )
-            Spacer(modifier = Modifier.height(8.dp))
+
+            Spacer(modifier = Modifier.height(12.dp))
+
             Text(
                 text = recipe.title,
-                style = MaterialTheme.typography.titleSmall,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Medium,
+                    color = Color.White
+                ),
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
+
 }

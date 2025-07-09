@@ -1,4 +1,6 @@
 package com.deto.staystrong.ui.routine
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -36,7 +38,7 @@ class RoutinesViewModel(private val routineService: RoutineService) : ViewModel(
         routinesUiState = RoutinesUiState.Loading
         viewModelScope.launch {
             try {
-                routineService.addRoutine(Routine(0,0,date.toString()))
+                routineService.addRoutine(Routine(0,0,date.toString(),"full_body"))
                 val updatedList = routineService.getRoutines()
                 routinesUiState = RoutinesUiState.Success(updatedList)
             }
@@ -49,5 +51,20 @@ class RoutinesViewModel(private val routineService: RoutineService) : ViewModel(
     fun refreshRoutines() {
         getRoutines()
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun addDefaultRoutine(type: String, date: LocalDate = LocalDate.now()) {
+        routinesUiState = RoutinesUiState.Loading
+        viewModelScope.launch {
+            try {
+                routineService.addDefaultRoutine(Routine(0, 0, date.toString(), type))
+                val updatedList = routineService.getRoutines()
+                routinesUiState = RoutinesUiState.Success(updatedList)
+            } catch (e: Exception) {
+                routinesUiState = RoutinesUiState.Error(e.message ?: "Error al crear rutina por defecto")
+            }
+        }
+    }
+
 
 }

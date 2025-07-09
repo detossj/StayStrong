@@ -39,8 +39,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import coil.request.CachePolicy
@@ -54,6 +57,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -65,6 +69,7 @@ import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.model.Exercise
 import coil.imageLoader
 import com.deto.staystrong.data.remote.ApiClient.BASE_URL
+import com.deto.staystrong.ui.components.CustomBottomAppBar
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 import com.deto.staystrong.ui.routineExercise.RoutineExerciseViewModel
 import java.text.Normalizer
@@ -78,24 +83,41 @@ fun ExerciseListScreen(navController: NavController, idRoutine: Int) {
 
     var selectedExercise by remember { mutableStateOf<Exercise?>(null) }
 
-    AnimatedContent(
-        targetState = selectedExercise,
-        transitionSpec = {
-            fadeIn(tween(300)) + scaleIn(tween(300)) with
-                    fadeOut(tween(300)) + scaleOut(tween(300))
+    Scaffold(
+        bottomBar = {
+            CustomBottomAppBar(navController)
         },
-    ) { exercise ->
-        if (exercise == null) {
-            ExerciseGridScreen(onExerciseClick = { selectedExercise = it })
-        } else {
-            ExpandedMuscleView(
-                navController = navController,
-                idRoutine = idRoutine,
-                exercise = exercise,
-                onBack = { selectedExercise = null }
-            )
+        containerColor = Color.Black
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                AnimatedContent(
+                    targetState = selectedExercise,
+                    transitionSpec = {
+                        fadeIn(tween(300)) + scaleIn(tween(300)) with
+                                fadeOut(tween(300)) + scaleOut(tween(300))
+                    },
+                ) { exercise ->
+                    if (exercise == null) {
+                        ExerciseGridScreen(onExerciseClick = { selectedExercise = it })
+                    } else {
+                        ExpandedMuscleView(
+                            navController = navController,
+                            idRoutine = idRoutine,
+                            exercise = exercise,
+                            onBack = { selectedExercise = null }
+                        )
+                    }
+                }
+            }
         }
     }
+
+
 }
 
 @Composable
@@ -127,7 +149,6 @@ fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseV
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
     ) {
 
 
@@ -210,41 +231,52 @@ fun ExerciseCard(exercise: Exercise, exercisesListFilter: String, onClick: () ->
 
     val painter = rememberExerciseImagePainter(exercise.image_path)
 
-    Column(
-        modifier = Modifier
-            .clip(RoundedCornerShape(12.dp))
-            .background(Color.Gray)
-            .clickable { onClick() }
-            .padding(16.dp)
-            .width(160.dp)
-            .height(230.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+
+    Card(
+        colors = CardDefaults.cardColors(
+        containerColor = Color(0xFF1E1E1E),
+        contentColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Image(
-            painter = painter,
-            contentDescription = exercise.name,
-            contentScale = ContentScale.Crop,
+        Column(
             modifier = Modifier
-                .size(100.dp)
-                .clip(CircleShape)
-        )
+                .clip(RoundedCornerShape(12.dp))
+                .clickable { onClick() }
+                .padding(16.dp)
+                .width(160.dp)
+                .height(230.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Image(
+                painter = painter,
+                contentDescription = exercise.name,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
+            )
 
-        Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-        Text(
-            text = highlightMatch(exercise.name,exercisesListFilter,Color(0xFFFF9800)),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = Color.White,
-            textAlign = TextAlign.Center
-        )
-        Text(
-            text = highlightMatch(exercise.description,exercisesListFilter,Color(0xFFFF9800)),
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Normal,
-            color = Color.White,
-            textAlign = TextAlign.Center
-        )
+            Text(
+                text = highlightMatch(exercise.name,exercisesListFilter,Color(0xFFFF9800)),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                text = highlightMatch(exercise.description,exercisesListFilter,Color(0xFFFF9800)),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Normal,
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
     }
 }
 
@@ -320,8 +352,9 @@ fun ExpandedMuscleView( navController: NavController, idRoutine: Int, exercise: 
                     viewModel.addRoutineExercise(idRoutine,exercise.id)
                     navController.popBackStack() },
                 modifier = Modifier
+                    .padding(horizontal = 16.dp)
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .height(50.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.White,
                     contentColor = Color.Black

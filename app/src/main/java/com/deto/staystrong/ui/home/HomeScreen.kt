@@ -19,9 +19,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -35,14 +36,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.deto.staystrong.Routines
 import com.deto.staystrong.model.RoutineVideo
+import com.deto.staystrong.ui.auth.AuthViewModel
 import com.deto.staystrong.ui.components.CustomBottomAppBar
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 
 @Composable
-fun HomeScreen(navController: NavController, viewModel: RoutineVideoViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun HomeScreen(navController: NavController, viewModel: RoutineVideoViewModel = viewModel(factory = AppViewModelProvider.Factory), authViewModel: AuthViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     val uiState = viewModel.routineVideoUiState
 
+    val userData = authViewModel.userData
+    val userName = userData?.name ?: return
     LaunchedEffect(Unit) {
         viewModel.refreshRoutineVideos()
     }
@@ -50,49 +55,90 @@ fun HomeScreen(navController: NavController, viewModel: RoutineVideoViewModel = 
     Scaffold(
         bottomBar = {
             CustomBottomAppBar(navController)
-        }
+        },
+        containerColor = Color.Black
     ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp)
+        ) {
+            item {
+                Spacer(modifier = Modifier.height(70.dp))
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-            )   {
                 Text(
-                    text = "¿No sabes como entrenar?",
+                    text = "¿Listo para empezar a levantar, $userName?",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
-                    modifier = Modifier
-                        .padding(top = 70.dp, bottom = 16.dp)
-                        .padding(horizontal = 16.dp),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
 
-                when (uiState) {
-                    is RoutineVideoUiState.Loading -> {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            CustomCircularProgressIndicator("videos")
-                        }
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Simplemente comienza tu entrenamiento y agrega tus ejercicios favoritos. ¡Tus estadísticas estarán listas cuando termines!",
+                    fontSize = 16.sp,
+                    color = Color.Gray,
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Button(
+                    onClick = { navController.navigate(Routines) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    )
+                ) {
+                    Text(
+                        text = "Empezar el entrenamiento de hoy",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                Text(
+                    text = "¿No sabes cómo entrenar?",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            when (uiState) {
+                is RoutineVideoUiState.Loading -> item {
+                    Box(modifier = Modifier.fillParentMaxSize(), contentAlignment = Alignment.Center) {
+                        CustomCircularProgressIndicator("videos")
                     }
-                    is RoutineVideoUiState.Error -> {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text("Error: ${uiState.message}")
-                        }
+                }
+
+                is RoutineVideoUiState.Error -> item {
+                    Box(modifier = Modifier.fillParentMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("Error: ${uiState.message}")
                     }
-                    is RoutineVideoUiState.Success -> {
-                        val routineVideos = uiState.routineVideos
-                        LazyColumn(modifier = Modifier.fillMaxSize()) {
-                            items(routineVideos) { video ->
-                                RoutineVideoCard(video = video)
-                            }
-                        }
+                }
+
+                is RoutineVideoUiState.Success -> {
+                    items(uiState.routineVideos) { video ->
+                        RoutineVideoCard(video = video)
                     }
-                    RoutineVideoUiState.Idle -> {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text("No hay videos disponibles")
-                        }
+                }
+
+                RoutineVideoUiState.Idle -> item {
+                    Box(modifier = Modifier.fillParentMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("No hay videos disponibles")
                     }
                 }
             }
@@ -120,14 +166,17 @@ fun RoutineVideoCard(video: RoutineVideo) {
 
     Card(
         modifier = Modifier
-            .padding(8.dp)
+            .padding(top = 10.dp)
             .fillMaxWidth()
             .clickable {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(video.video_url))
                 context.startActivity(intent)
             },
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF1E1E1E),
+            contentColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column {
 

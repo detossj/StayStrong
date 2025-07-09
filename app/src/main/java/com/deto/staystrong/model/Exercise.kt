@@ -5,5 +5,6 @@ data class Exercise(
     val id: Int,
     val name: String,
     val description: String,
-    val image_path: String
+    val image_path: String,
+    val category: String
 )

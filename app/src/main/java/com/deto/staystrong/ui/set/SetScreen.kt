@@ -25,12 +25,12 @@ import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 import com.deto.staystrong.R
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-
-
+import androidx.navigation.NavController
+import com.deto.staystrong.ui.components.CustomBottomAppBar
 
 
 @Composable
-fun SetScreen(idRoutine: Int, idRoutineExercise: Int , nameExercise: String, viewModel: SetViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun SetScreen(navController: NavController, idRoutine: Int, idRoutineExercise: Int , nameExercise: String, viewModel: SetViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
 
 
     LaunchedEffect(Unit) {
@@ -40,7 +40,10 @@ fun SetScreen(idRoutine: Int, idRoutineExercise: Int , nameExercise: String, vie
     val uiState = viewModel.setUiState
 
     Scaffold(
-        modifier = Modifier.fillMaxSize()
+        bottomBar = {
+            CustomBottomAppBar(navController)
+        },
+        containerColor = Color.Black
     ) { innerPadding ->
 
         Column(
@@ -92,7 +95,9 @@ fun SetScreen(idRoutine: Int, idRoutineExercise: Int , nameExercise: String, vie
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = 8.dp),
-                                colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E)),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color(0xFF1E1E1E),
+                                    contentColor = Color.White),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                             ) {
                                 Column(
@@ -193,7 +198,9 @@ fun SetScreen(idRoutine: Int, idRoutineExercise: Int , nameExercise: String, vie
                             Button(
                                 onClick = { viewModel.addSet(idRoutine, idRoutineExercise)  },
                                 modifier = Modifier
-                                    .fillMaxWidth().padding(top = 10.dp),
+                                    .padding(top = 10.dp)
+                                    .fillMaxWidth()
+                                    .height(50.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color.White,
                                     contentColor = Color.Black
@@ -205,6 +212,8 @@ fun SetScreen(idRoutine: Int, idRoutineExercise: Int , nameExercise: String, vie
                                     fontWeight = FontWeight.Bold
                                 )
                             }
+
+
 
                         }
 

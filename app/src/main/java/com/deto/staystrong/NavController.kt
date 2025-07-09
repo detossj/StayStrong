@@ -3,15 +3,21 @@ package com.deto.staystrong
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.ui.auth.AuthManager
+import com.deto.staystrong.ui.auth.AuthViewModel
 import com.deto.staystrong.ui.auth.LoginScreen
 import com.deto.staystrong.ui.auth.RegisterScreen
+import com.deto.staystrong.ui.calculator.CalculatorScreen
 import com.deto.staystrong.ui.exercise.ExerciseListScreen
 import com.deto.staystrong.ui.home.HomeScreen
+import com.deto.staystrong.ui.profile.ProfileScreen
+import com.deto.staystrong.ui.progress.ProgressScreen
 import com.deto.staystrong.ui.recipe.RecipeScreen
 import com.deto.staystrong.ui.recipe.RecipesScreen
 import com.deto.staystrong.ui.routineExercise.RoutineScreen
@@ -42,6 +48,15 @@ data class Recipe(val idRecipe: Int)
 object Routines
 
 @Serializable
+object Progress
+
+@Serializable
+object Calculator
+
+@Serializable
+object Profile
+
+@Serializable
 data class Routine(val idRoutine: Int, val formattedDate: String)
 
 @Serializable
@@ -56,6 +71,7 @@ data class Set(val idRoutine: Int,val idRoutineExercise: Int, val nameExercise: 
 fun Navigation() {
 
     val navController = rememberNavController()
+
 
     NavHost(navController = navController, startDestination = AuthManager) {
 
@@ -81,6 +97,15 @@ fun Navigation() {
         composable<Routines> {
             RoutinesScreen(navController = navController)
         }
+        composable<Progress> {
+            ProgressScreen(navController = navController)
+        }
+        composable<Calculator> {
+            CalculatorScreen(navController = navController)
+        }
+        composable<Profile> {
+            ProfileScreen(navController = navController)
+        }
         composable<Routine> { backStackEntry ->
             val args = backStackEntry.toRoute<Routine>()
             RoutineScreen(navController = navController, idRoutine = args.idRoutine, formattedDate = args.formattedDate)
@@ -91,7 +116,9 @@ fun Navigation() {
         }
         composable<Set> { backStackEntry ->
             val args = backStackEntry.toRoute<Set>()
-            SetScreen(idRoutine = args.idRoutine, idRoutineExercise = args.idRoutineExercise, nameExercise = args.nameExercise)
+            SetScreen(navController = navController, idRoutine = args.idRoutine, idRoutineExercise = args.idRoutineExercise, nameExercise = args.nameExercise)
         }
+
+
     }
 }
