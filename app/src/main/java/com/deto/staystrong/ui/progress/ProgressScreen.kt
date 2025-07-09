@@ -63,7 +63,8 @@ fun ProgressScreen(navController: NavController, viewModel: ProgressViewModel = 
     Scaffold(
         bottomBar = {
             CustomBottomAppBar(navController)
-        }
+        },
+        containerColor = Color.Black
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
 
