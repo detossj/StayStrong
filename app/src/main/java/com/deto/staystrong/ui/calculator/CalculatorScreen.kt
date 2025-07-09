@@ -2,18 +2,15 @@
 package com.deto.staystrong.ui.calculator
 
 
-
-
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -22,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.deto.staystrong.ui.components.CustomBottomAppBar
 import kotlin.math.roundToInt
+import com.deto.staystrong.R
 
 
 @Composable
@@ -66,7 +64,7 @@ fun CalculatorScreen(navController: NavController) {
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
-                    text = "Calculadora de Calorías",
+                    text = stringResource(R.string.calculator_title),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
@@ -92,10 +90,10 @@ fun CalculatorScreen(navController: NavController) {
                                 altura = it
                                 if (error1 && it.isNotBlank()) error1 = false
                             },
-                            label = "Altura (cm)",
-                            placeholder = "Ej: 175",
+                            label = stringResource(R.string.calculator_label_altura),
+                            placeholder = stringResource(R.string.calculator_placeholder_altura),
                             error = error1,
-                            supportingText = "Ingresa tu altura "
+                            supportingText = stringResource(R.string.calculator_supportingText_altura)
                         )
 
                         CustomOutlinedTextField(
@@ -104,10 +102,10 @@ fun CalculatorScreen(navController: NavController) {
                                 edad = it
                                 if (error2 && it.isNotBlank()) error2 = false
                             },
-                            label = "Edad",
-                            placeholder = "Ej: 25",
+                            label = stringResource(R.string.calculator_label_edad),
+                            placeholder = stringResource(R.string.calculator_placeholder_edad),
                             error = error2,
-                            supportingText = "Ingresa tu edad"
+                            supportingText = stringResource(R.string.calculator_supportingText_edad)
                         )
                     }
 
@@ -122,10 +120,10 @@ fun CalculatorScreen(navController: NavController) {
                                 peso = it
                                 if (error3 && it.isNotBlank()) error3 = false
                             },
-                            label = "Peso (kg)",
-                            placeholder = "Ej: 70",
+                            label = stringResource(R.string.calculator_label_peso),
+                            placeholder = stringResource(R.string.calculator_placeholder_peso),
                             error = error3,
-                            supportingText = "Ingresa tu peso "
+                            supportingText = stringResource(R.string.calculator_supportingText_peso)
                         )
 
                         ExposedDropdownMenuBox(
@@ -136,7 +134,7 @@ fun CalculatorScreen(navController: NavController) {
                                 value = seleccionSexos,
                                 onValueChange = {},
                                 readOnly = true,
-                                label = { Text("Sexo") },
+                                label = { Text(stringResource(R.string.calculator_label_sexo)) },
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded1) },
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -183,7 +181,7 @@ fun CalculatorScreen(navController: NavController) {
                         value = seleccionActividad,
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("Nivel de actividad") },
+                        label = { Text(stringResource(R.string.calculator_label_nivelDeActividad)) },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded2) },
                         modifier = Modifier
                             .menuAnchor()
@@ -248,7 +246,7 @@ fun CalculatorScreen(navController: NavController) {
                         )
                     ) {
                         Text(
-                            text = "Calcular Calorías",
+                            text = stringResource(R.string.calculator_text_button),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
                         )
