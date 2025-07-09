@@ -50,7 +50,8 @@ fun RoutineScreen( navController: NavController, idRoutine: Int , formattedDate:
                 navController.navigate(ExerciseList(idRoutine))
             })
         },
-        bottomBar = { CustomBottomAppBar(navController) }
+        bottomBar = { CustomBottomAppBar(navController) },
+        containerColor = Color.Black
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -145,7 +146,9 @@ fun ExerciseItem( navController: NavController, idRoutine: Int, routineExercise:
             .fillMaxWidth()
             .padding(vertical = 4.dp)
             .clickable { navController.navigate(Set(idRoutine, routineExercise.id, routineExercise.exercise?.name ?: "")) },
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E)),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF1E1E1E),
+            contentColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
@@ -176,6 +179,7 @@ fun ExerciseItem( navController: NavController, idRoutine: Int, routineExercise:
                 ) {
                     Text(
                         text = routineExercise.exercise?.name ?: "",
+                        color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
                         maxLines = 1,
