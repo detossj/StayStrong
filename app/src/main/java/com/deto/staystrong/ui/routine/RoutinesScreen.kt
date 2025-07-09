@@ -27,6 +27,7 @@ import com.deto.staystrong.ui.AppViewModelProvider
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import com.deto.staystrong.Routine
@@ -177,11 +178,11 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
                                 items(filteredRoutines.size) { index ->
 
                                     val routine = filteredRoutines[index]
-
+                                    var expanded by remember { mutableStateOf(false) }
                                     Card(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(horizontal = 16.dp, vertical = 10.dp)
+                                            .padding(horizontal = 30.dp, vertical = 10.dp)
                                             .clickable {
                                                 selected = routine.id
                                                 navController.navigate(Routine(selected, formattedDate))
@@ -196,13 +197,44 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
                                         Column(
                                             modifier = Modifier
                                                 .fillMaxWidth()
+                                                .clickable {
+                                                    selected = routine.id
+                                                    navController.navigate(Routine(selected, formattedDate))
+                                                }
                                                 .padding(20.dp)
                                         ) {
-                                            Text(
-                                                text = "Rutina ${index + 1}",
-                                                style = MaterialTheme.typography.titleMedium,
-                                                fontWeight = FontWeight.Bold
-                                            )
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                modifier = Modifier.fillMaxWidth()
+                                            ) {
+                                                Text(
+                                                    text = "Rutina ${index + 1}",
+                                                    style = MaterialTheme.typography.titleMedium,
+                                                    fontWeight = FontWeight.Bold
+                                                )
+                                                Box {
+                                                    IconButton(onClick = { expanded = true }) {
+                                                        Icon(
+                                                            imageVector = Icons.Default.MoreVert,
+                                                            contentDescription = "Opciones"
+                                                        )
+                                                    }
+
+                                                    DropdownMenu(
+                                                        expanded = expanded,
+                                                        onDismissRequest = { expanded = false }
+                                                    ) {
+                                                        DropdownMenuItem(
+                                                            text = { Text("Eliminar") },
+                                                            onClick = {
+                                                                expanded = false
+                                                                viewModel.deleteRoutine(routine.id)
+                                                            }
+                                                        )
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
