@@ -90,17 +90,6 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
             verticalArrangement = Arrangement.Center
         ) {
 
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                contentDescription = "Logo Aplicacion",
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .border(4.dp, Color.White, CircleShape)
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
             Text(
                 text = stringResource(R.string.login_title),
                 style = MaterialTheme.typography.headlineSmall,
