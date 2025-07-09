@@ -79,7 +79,8 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel = viewM
     Scaffold(
         bottomBar = {
             CustomBottomAppBar(navController)
-        }
+        },
+        containerColor = Color.Black
     ) { innerPadding ->
         Box(modifier = Modifier
             .padding(innerPadding)
