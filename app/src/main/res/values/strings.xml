@@ -32,6 +32,15 @@
     <string name="calculator_label_sexo">Sexo</string>
     <string name="calculator_label_nivelDeActividad">Nivel de actividad</string>
     <string name="calculator_text_button">Calcular Calorías</string>
+    <string name="customBottomAppBar_inicio">Inicio</string>
+    <string name="customBottomAppBar_recetas">Recetas</string>
+    <string name="customBottomAppBar_entrenar">Entrenar</string>
+    <string name="customBottomAppBar_progreso">Progreso</string>
+    <string name="customBottomAppBar_tu">Tú</string>
+
+
+
+
 
 
 </resources>
