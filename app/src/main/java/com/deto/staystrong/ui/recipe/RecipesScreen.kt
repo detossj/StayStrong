@@ -58,7 +58,8 @@ fun RecipesScreen(navController : NavController, viewModel: RecipesViewModel = v
     Scaffold(
         bottomBar = {
             CustomBottomAppBar(navController)
-        }
+        },
+        containerColor = Color.Black
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
 
@@ -133,8 +134,10 @@ fun RecipeCard(navController : NavController, recipe: Recipe) {
             .clickable {
                 navController.navigate(com.deto.staystrong.Recipe(recipe.id))
             },
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF1E1E1E),
+            contentColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
