@@ -19,5 +19,19 @@
     <string name="login_bottom_text">¿Aún no tienes una cuenta?</string>
     <string name="login_bottom_textbutton">Únete aquí</string>
     <string name="SearchFilter">Buscar</string>
+    <string name="calculator_title">Calculadora de Calorías</string>
+    <string name="calculator_label_altura">Altura (cm)</string>
+    <string name="calculator_placeholder_altura">Ej: 175</string>
+    <string name="calculator_supportingText_altura">Ingresa tu altura</string>
+    <string name="calculator_label_edad">Edad</string>
+    <string name="calculator_placeholder_edad">Ej: 25</string>
+    <string name="calculator_supportingText_edad">Ingresa tu edad</string>
+    <string name="calculator_label_peso">Peso (kg)</string>
+    <string name="calculator_placeholder_peso">Ej: 70</string>
+    <string name="calculator_supportingText_peso">Ingresa tu peso</string>
+    <string name="calculator_label_sexo">Sexo</string>
+    <string name="calculator_label_nivelDeActividad">Nivel de actividad</string>
+    <string name="calculator_text_button">Calcular Calorías</string>
+
 
 </resources>
