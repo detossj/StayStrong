@@ -2,7 +2,6 @@ package com.deto.staystrong.ui.recipe
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,18 +18,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
-import com.deto.staystrong.data.remote.ApiClient.BASE_URL
 import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.ui.components.CustomBottomAppBar
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 import com.deto.staystrong.ui.exercise.rememberExerciseImagePainter
+import com.deto.staystrong.R
 
 
 @Composable
@@ -117,7 +116,7 @@ fun RecipeScreen(navController: NavController, idRecipe: Int, viewModel: RecipeV
                             Spacer(modifier = Modifier.height(24.dp))
 
                             Text(
-                                text = "Ingredientes",
+                                text = stringResource(R.string.recipe_text_ingredientes),
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
@@ -139,7 +138,7 @@ fun RecipeScreen(navController: NavController, idRecipe: Int, viewModel: RecipeV
                             Spacer(modifier = Modifier.height(24.dp))
 
                             Text(
-                                text = "Pasos",
+                                text = stringResource(R.string.recipe_text_pasos),
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
