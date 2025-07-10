@@ -22,17 +22,29 @@ fun CustomOutlinedTextFieldLoginAndRegister(value: String, onValueChange: ( Stri
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        leadingIcon = { Icon(imageVector = icon, contentDescription = "Icono") },
+        leadingIcon = {
+            Icon(
+                imageVector = icon,
+                contentDescription = "Icono",
+                tint = Color.Black
+            )
+        },
         shape = RoundedCornerShape(50),
         singleLine = true,
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = Color.White,
             unfocusedContainerColor = Color.White ,
             disabledContainerColor = Color.White,
-            errorContainerColor = Color.White
+            errorContainerColor = Color.White,
+
         ),
         modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(stringResource(placeholder)) },
+        placeholder = {
+            Text(
+                text = stringResource(placeholder),
+                color = Color.Black
+            )
+        },
         isError = isError,
         supportingText = { if (isError) Text(stringResource(supportingText)) },
         minLines = 1,
