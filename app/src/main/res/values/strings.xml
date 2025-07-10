@@ -67,7 +67,9 @@
     <string name="progress_grafico_text">Volumen de entrenamiento mensual</string>
     <string name="progress_subtitle">¿Sabes cuál es tu gasto calórico basal?</string>
     <string name="progress_text_button">Calcular calorías</string>
-
+    <string name="recipes_title">Recetas Fit</string>
+    <string name="recipe_text_ingredientes">Ingredientes</string>
+    <string name="recipe_text_pasos">Pasos</string>
 
 
 
