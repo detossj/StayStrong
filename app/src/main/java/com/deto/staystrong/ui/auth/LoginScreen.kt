@@ -27,6 +27,9 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.layout.ContentScale
@@ -38,7 +41,6 @@ import com.deto.staystrong.Login
 import com.deto.staystrong.R
 import com.deto.staystrong.Register
 import com.deto.staystrong.ui.AppViewModelProvider
-import com.deto.staystrong.ui.components.CustomButtonLoginAndRegister
 import com.deto.staystrong.ui.components.CustomOutlinedTextFieldLoginAndRegister
 
 
@@ -75,7 +77,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White.copy(alpha = 0.1f))
+                .background(Color.Black.copy(alpha = 0.1f))
         )
 
         Column(
@@ -119,17 +121,25 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            CustomButtonLoginAndRegister(
+            Button(
                 onClick = {
                     errorEmail = email.isBlank()
                     errorPassword = password.isBlank()
 
                     if (!errorEmail && !errorPassword) {
                         viewModel.login(email, password)
-                    }
-                },
-                text = R.string.login_button_text
-            )
+                    } },
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color.Black
+                )
+            ){
+                Text(stringResource(R.string.login_button_text), fontWeight = FontWeight.Bold)
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
