@@ -70,10 +70,24 @@ fun RecipesScreen(navController : NavController, viewModel: RecipesViewModel = v
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
+                    textAlign = TextAlign.Center,
                     modifier = Modifier
+                        .fillMaxWidth()
                         .padding(top = 50.dp, bottom = 16.dp)
                         .padding(horizontal = 16.dp),
-                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = stringResource(R.string.recipes_message),
+                    fontSize = 16.sp,
+                    color = Color.Gray,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 10.dp)
                 )
 
                 when (uiState) {
