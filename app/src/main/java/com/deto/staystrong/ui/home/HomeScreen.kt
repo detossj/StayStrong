@@ -84,6 +84,10 @@ fun HomeScreen(navController: NavController, viewModel: RoutineVideoViewModel = 
                     text  = stringResource(R.string.home_message),
                     fontSize = 16.sp,
                     color = Color.Gray,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
