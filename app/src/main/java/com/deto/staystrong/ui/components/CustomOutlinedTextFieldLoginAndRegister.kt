@@ -46,7 +46,12 @@ fun CustomOutlinedTextFieldLoginAndRegister(value: String, onValueChange: ( Stri
             )
         },
         isError = isError,
-        supportingText = { if (isError) Text(stringResource(supportingText)) },
+        supportingText = {
+            if (isError) Text(
+                text = stringResource(supportingText),
+                color = Color(0xFFFF0000)
+            )
+        },
         minLines = 1,
         maxLines = 1,
         textStyle = TextStyle(Color.Black),
