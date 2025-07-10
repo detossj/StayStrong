@@ -32,16 +32,16 @@ fun CalculatorScreen(navController: NavController) {
     var error2 by remember { mutableStateOf(false) }
     var error3 by remember { mutableStateOf(false) }
 
-    val sexos = listOf("Hombre", "Mujer")
+    val sexos = listOf(stringResource(R.string.calculator_list_sexosHombre), stringResource(R.string.calculator_list_sexosMujer))
     var expanded1 by remember { mutableStateOf(false) }
     var seleccionSexos by remember { mutableStateOf(sexos[0]) }
 
     val actividad = listOf(
-        "Baja (rara vez o nunca)",
-        "Ligera (1-3 veces por semana)",
-        "Moderada (3-5 veces por semana)",
-        "Alta (6 veces por semana)",
-        "Muy alta (Deportista Profesional)"
+        stringResource(R.string.calculator_list_actividadBaja),
+        stringResource(R.string.calculator_list_actividadLigera),
+        stringResource(R.string.calculator_list_actividadModerada),
+        stringResource(R.string.calculator_list_actividadAlta),
+        stringResource(R.string.calculator_list_actividadMuyAlta),
     )
     var expanded2 by remember { mutableStateOf(false) }
     var seleccionActividad by remember { mutableStateOf(actividad[1]) }
