@@ -15,8 +15,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -99,7 +99,7 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel = viewM
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Perfil",
+                        text = stringResource(R.string.profile_title),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -117,7 +117,7 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel = viewM
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
-                            text = "Cerrar sesión",
+                            text = stringResource(R.string.profile_logout),
                             color = Color.Red,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold
@@ -136,7 +136,7 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel = viewM
                     }
                 } else {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
-                        CampoEditable("Nombre completo", editableProfile.name, { editableProfile = editableProfile.copy(name = it) }, isEditable, Modifier.weight(1f), 1)
+                        CampoEditable(stringResource(R.string.profile_label_nombre), editableProfile.name, { editableProfile = editableProfile.copy(name = it) }, isEditable, Modifier.weight(1f), 1)
                     }
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -146,7 +146,7 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel = viewM
                             value = formatDateToDisplay(editableProfile.birth),
                             onValueChange = {},
                             readOnly = true,
-                            label = { Text("Fecha de Nacimiento") },
+                            label = { Text(stringResource(R.string.profile_label_fecha)) },
                             colors = customTextFieldColors(),
                             modifier = Modifier.weight(1f)
                         )
@@ -198,7 +198,7 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel = viewM
                                     onValueChange = {},
                                     readOnly = true,
                                     enabled = isEditable,
-                                    label = { Text("Sexo") },
+                                    label = { Text(stringResource(R.string.profile_label_sexo)) },
                                     trailingIcon = {
                                         if (!isEditable) {
                                             Icon(imageVector = Icons.Default.Lock, contentDescription = "Bloqueado", tint = Color.Gray)
@@ -226,22 +226,22 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel = viewM
                             }
                         }
 
-                        CampoEditable("Peso (kg)", editableProfile.weight, { editableProfile = editableProfile.copy(weight = it) }, isEditable, Modifier.weight(1f), 1)
+                        CampoEditable(stringResource(R.string.profile_label_peso), editableProfile.weight, { editableProfile = editableProfile.copy(weight = it) }, isEditable, Modifier.weight(1f), 1)
                     }
 
                     Spacer(modifier = Modifier.height(8.dp))
-                    CampoEditable("Altura (cm)", editableProfile.height, { editableProfile = editableProfile.copy(height = it) }, isEditable, maxLine = 1)
+                    CampoEditable(stringResource(R.string.profile_label_altura), editableProfile.height, { editableProfile = editableProfile.copy(height = it) }, isEditable, maxLine = 1)
 
                     Spacer(modifier = Modifier.height(16.dp))
                     Divider(color = Color.Gray)
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Text("Social", color = Color.White, style = MaterialTheme.typography.bodySmall)
+                    Text(stringResource(R.string.profile_subtitle), color = Color.White, style = MaterialTheme.typography.bodySmall)
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    CampoEditable("Bio", editableProfile.bio, { editableProfile = editableProfile.copy(bio = it) }, isEditable, maxLine = 5)
+                    CampoEditable(stringResource(R.string.profile_label_bio), editableProfile.bio, { editableProfile = editableProfile.copy(bio = it) }, isEditable, maxLine = 5)
                     Spacer(modifier = Modifier.height(8.dp))
-                    CampoEditable("Instagram", editableProfile.ig, { editableProfile = editableProfile.copy(ig = it) }, isEditable, maxLine = 1)
+                    CampoEditable(stringResource(R.string.profile_label_instagram), editableProfile.ig, { editableProfile = editableProfile.copy(ig = it) }, isEditable, maxLine = 1)
 
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -274,7 +274,7 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel = viewM
                         )
                     ) {
                         Text(
-                            text = if (isEditable) "Guardar" else "Modificar perfil",
+                            text = if (isEditable) stringResource(R.string.profile_text_button_isEditable) else stringResource(R.string.profile_text_button),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
                         )
