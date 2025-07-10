@@ -41,10 +41,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import com.deto.staystrong.Calculator
-import com.deto.staystrong.Routines
 import com.deto.staystrong.model.SimpleBarData
 import com.deto.staystrong.ui.auth.AuthViewModel
+import com.deto.staystrong.R
 
 
 @Composable
@@ -75,7 +76,7 @@ fun ProgressScreen(navController: NavController, viewModel: ProgressViewModel = 
                     .padding(10.dp)
             ) {
                 Text(
-                    text = "Progreso",
+                    text = stringResource(R.string.progress_title),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
@@ -114,7 +115,7 @@ fun ProgressScreen(navController: NavController, viewModel: ProgressViewModel = 
 
                                     if (uiState.monthlyVolumes.isEmpty()) {
                                         Text(
-                                            text = "No hay datos registrados aún.",
+                                            text = stringResource(R.string.progress_grafico_text_condition),
                                             color = Color.LightGray,
                                             textAlign = TextAlign.Center,
                                             modifier = Modifier
@@ -127,7 +128,7 @@ fun ProgressScreen(navController: NavController, viewModel: ProgressViewModel = 
 
 
                                     Text(
-                                        text = "Volumen de entrenamiento mensual",
+                                        text = stringResource(R.string.progress_grafico_text),
                                         fontSize = 18.sp,
                                         fontWeight = FontWeight.Medium,
                                         color = Color.LightGray,
@@ -147,7 +148,7 @@ fun ProgressScreen(navController: NavController, viewModel: ProgressViewModel = 
                                     .padding(16.dp)
                             ) {
                                 Text(
-                                    text = "¿Sabes cuál es tu gasto calórico basal?",
+                                    text = stringResource(R.string.progress_subtitle),
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.SemiBold,
                                     color = Color.White,
@@ -170,7 +171,7 @@ fun ProgressScreen(navController: NavController, viewModel: ProgressViewModel = 
                                     )
                                 ) {
                                     Text(
-                                        text = "Calcular calorías",
+                                        text = stringResource(R.string.progress_text_button),
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Bold
                                     )
