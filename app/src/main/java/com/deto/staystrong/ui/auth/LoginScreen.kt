@@ -28,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -45,8 +46,10 @@ import com.deto.staystrong.ui.components.CustomOutlinedTextFieldLoginAndRegister
 
 
 @Composable
-fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
-
+fun LoginScreen(
+    navController: NavController,
+    viewModel: AuthViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -64,8 +67,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         Image(
             painter = painterResource(id = R.drawable.login),
@@ -87,7 +89,6 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-
             Text(
                 text = stringResource(R.string.login_title),
                 style = MaterialTheme.typography.headlineSmall,
@@ -128,7 +129,8 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
 
                     if (!errorEmail && !errorPassword) {
                         viewModel.login(email, password)
-                    } },
+                    }
+                },
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .fillMaxWidth()
@@ -137,7 +139,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
                     containerColor = Color.White,
                     contentColor = Color.Black
                 )
-            ){
+            ) {
                 Text(stringResource(R.string.login_button_text), fontWeight = FontWeight.Bold)
             }
 
@@ -148,38 +150,48 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = viewMod
             ) {
                 Text(stringResource(R.string.login_bottom_text), color = Color.White)
                 TextButton(onClick = { navController.navigate(Register) }) {
-                    Text(stringResource(R.string.login_bottom_textbutton), color = Color.White, fontWeight = FontWeight.Bold)
+                    Text(
+                        stringResource(R.string.login_bottom_textbutton),
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            when (authState) {
-                is AuthUiState.Loading -> {
-                    CircularProgressIndicator(
-                        color = Color.White
-                    )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                when (authState) {
+                    is AuthUiState.Loading -> {
+                        CircularProgressIndicator(
+                            color = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+
+                    is AuthUiState.Success -> {
+                        Text(
+                            text = stringResource(R.string.login_auth_successful),
+                            color = Color.White
+                        )
+                    }
+
+                    is AuthUiState.Error -> {
+                        Text(
+                            text = authState.message,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+
+                    else -> {  }
                 }
-
-                is AuthUiState.Success -> {
-                    Text(
-                        text = stringResource(R.string.login_auth_successful),
-                        color = Color.White,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
-                }
-
-                is AuthUiState.Error -> {
-                    Text(
-                        text = authState.message,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
-                }
-
-                else -> {}
-
             }
         }
     }
