@@ -24,6 +24,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import com.deto.staystrong.R
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
@@ -31,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -79,7 +81,7 @@ fun HomeScreen(navController: NavController, viewModel: RoutineVideoViewModel = 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Simplemente comienza tu entrenamiento y agrega tus ejercicios favoritos. ¡Tus estadísticas estarán listas cuando termines!",
+                    text  = stringResource(R.string.home_message),
                     fontSize = 16.sp,
                     color = Color.Gray,
                 )
@@ -97,7 +99,7 @@ fun HomeScreen(navController: NavController, viewModel: RoutineVideoViewModel = 
                     )
                 ) {
                     Text(
-                        text = "Empezar el entrenamiento de hoy",
+                        text = stringResource(R.string.home_message_button),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -106,7 +108,7 @@ fun HomeScreen(navController: NavController, viewModel: RoutineVideoViewModel = 
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Text(
-                    text = "¿No sabes cómo entrenar?",
+                    text = stringResource(R.string.home_subtitle),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
@@ -151,7 +153,7 @@ fun HomeScreen(navController: NavController, viewModel: RoutineVideoViewModel = 
 
 fun extractYoutubeId(url: String): String {
     return Uri.parse(url).getQueryParameter("v")
-        ?: url.substringAfterLast("/") // para enlaces tipo youtu.be/xxxxx
+        ?: url.substringAfterLast("/")
 }
 
 fun getYoutubeThumbnailUrl(youtubeUrl: String): String {
