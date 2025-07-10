@@ -47,6 +47,9 @@
     <string name="exerciseList_title">¿Qué quieres entrenar hoy?</string>
     <string name="expandedMuscleView_title">Grupos musculares trabajados:</string>
     <string name="expandedMuscleView_button">Añadir Ejercicio</string>
+    <string name="home_message">Simplemente comienza tu entrenamiento y agrega tus ejercicios favoritos. ¡Tus estadísticas estarán listas cuando termines</string>
+    <string name="home_message_button">Empezar el entrenamiento de hoy</string>
+    <string name="home_subtitle">¿No sabes cómo entrenar?</string>
 
 
 
