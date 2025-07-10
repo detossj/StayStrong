@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -21,9 +22,14 @@ fun CustomCircularProgressIndicator(message: String) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CircularProgressIndicator()
+            CircularProgressIndicator(
+                color = Color.White
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "Cargando $message...")
+            Text(
+                text = "Cargando $message...",
+                color = Color.White
+            )
         }
     }
 }
