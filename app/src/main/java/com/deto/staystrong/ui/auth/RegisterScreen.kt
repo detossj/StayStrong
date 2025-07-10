@@ -2,30 +2,13 @@ package com.deto.staystrong.ui.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import com.deto.staystrong.R
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,6 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.deto.staystrong.Home
 import com.deto.staystrong.Login
+import com.deto.staystrong.R
 import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.ui.components.CustomOutlinedTextFieldLoginAndRegister
 
@@ -64,8 +48,8 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel = view
         }
     }
 
-
     Box(modifier = Modifier.fillMaxSize()) {
+
 
         Image(
             painter = painterResource(id = R.drawable.register),
@@ -74,11 +58,13 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel = view
             modifier = Modifier.fillMaxSize()
         )
 
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Black.copy(alpha = 0.1f))
         )
+
 
         Column(
             modifier = Modifier
@@ -149,11 +135,12 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel = view
                     errorName = name.isBlank()
                     errorEmail = email.isBlank()
                     errorPassword = password.isBlank()
-                    errorValidationPassword= validationPassword.isBlank()
+                    errorValidationPassword = validationPassword.isBlank()
 
                     if (!errorName && !errorEmail && !errorPassword && !errorValidationPassword) {
-                        viewModel.register(name,email,password,validationPassword)
-                    } },
+                        viewModel.register(name, email, password, validationPassword)
+                    }
+                },
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .fillMaxWidth()
@@ -162,43 +149,45 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel = view
                     containerColor = Color.White,
                     contentColor = Color.Black
                 )
-            ){
+            ) {
                 Text(stringResource(R.string.register_button_text), fontWeight = FontWeight.Bold)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            when (authState) {
-                is AuthUiState.Loading -> {
-                    CircularProgressIndicator(
-                        color = Color.White
-                    )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                when (authState) {
+                    is AuthUiState.Loading -> {
+                        CircularProgressIndicator(
+                            color = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+
+                    is AuthUiState.Success -> {
+                        Text(
+                            text = stringResource(R.string.register_auth_successful),
+                            color = Color.White
+                        )
+                    }
+
+                    is AuthUiState.Error -> {
+                        Text(
+                            text = authState.message,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+
+                    else -> {  }
                 }
-
-                is AuthUiState.Success -> {
-                    Text(
-                        text = stringResource(R.string.register_auth_successful),
-                        color = Color.White,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
-                }
-
-                is AuthUiState.Error -> {
-                    Text(
-                        text = authState.message,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
-                }
-
-                else -> {}
-
             }
-
-
-
-
         }
     }
 }
