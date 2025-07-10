@@ -138,7 +138,7 @@ fun ProgressScreen(navController: NavController, viewModel: ProgressViewModel = 
                             }
 
 
-                            Spacer(Modifier.padding(30.dp))
+                            Spacer(Modifier.padding(10.dp))
 
 
                             Column(
