@@ -44,6 +44,12 @@
     <string name="customBottomAppBar_entrenar">Entrenar</string>
     <string name="customBottomAppBar_progreso">Progreso</string>
     <string name="customBottomAppBar_tu">Tú</string>
+    <string name="exerciseList_title">¿Qué quieres entrenar hoy?</string>
+    <string name="expandedMuscleView_title">Grupos musculares trabajados:</string>
+    <string name="expandedMuscleView_button">Añadir Ejercicio</string>
+
+
+
 
 
 
