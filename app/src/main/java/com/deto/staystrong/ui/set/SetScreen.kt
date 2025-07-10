@@ -25,6 +25,7 @@ import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 import com.deto.staystrong.R
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.deto.staystrong.ui.components.CustomBottomAppBar
 
@@ -209,7 +210,7 @@ fun SetScreen(navController: NavController, idRoutine: Int, idRoutineExercise: I
                                 )
                             ) {
                                 Text(
-                                    text = "Añadir Set",
+                                    text = stringResource(R.string.set_text_button),
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold
                                 )
