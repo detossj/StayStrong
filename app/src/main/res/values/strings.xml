@@ -50,6 +50,21 @@
     <string name="home_message">Simplemente comienza tu entrenamiento y agrega tus ejercicios favoritos. ¡Tus estadísticas estarán listas cuando termines</string>
     <string name="home_message_button">Empezar el entrenamiento de hoy</string>
     <string name="home_subtitle">¿No sabes cómo entrenar?</string>
+    <string name="profile_title">Perfil</string>
+    <string name="profile_logout">Cerrar sesión</string>
+    <string name="profile_label_nombre">Nombre completo</string>
+    <string name="profile_label_fecha">Fecha de Nacimiento</string>
+    <string name="profile_label_sexo">Sexo</string>
+    <string name="profile_label_peso">Peso (kg)</string>
+    <string name="profile_label_altura">Altura (cm)</string>
+    <string name="profile_subtitle">Social</string>
+    <string name="profile_label_bio">Bio</string>
+    <string name="profile_label_instagram">Instagram</string>
+    <string name="profile_text_button_isEditable">Guardar</string>
+    <string name="profile_text_button">Modificar perfil</string>
+
+
+
 
 
 
