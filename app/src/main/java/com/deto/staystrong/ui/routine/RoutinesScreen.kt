@@ -1,7 +1,6 @@
 package com.deto.staystrong.ui.routine
 
 import android.os.Build
-import android.view.ContextThemeWrapper
 import android.widget.CalendarView
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -30,11 +29,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.stringResource
 import com.deto.staystrong.Routine
 import com.deto.staystrong.ui.components.CustomBottomAppBar
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 import com.deto.staystrong.ui.components.CustomFloatingActionButton
-
+import com.deto.staystrong.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -150,7 +150,6 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
                         is RoutinesUiState.Success -> {
                             val routines = uiState.routines
 
-                            // Filtrar solo para la fecha seleccionada
                             val filteredRoutines = routines.filter { routine ->
                                 routine.date.startsWith(selectedDate.toString())
                             }
@@ -163,9 +162,9 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
                                     verticalArrangement = Arrangement.Center,
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Text("No hay rutinas para esta fecha.", style = MaterialTheme.typography.bodyLarge)
+                                    Text(stringResource(R.string.routines_text1_condition), style = MaterialTheme.typography.bodyLarge)
                                     Spacer(modifier = Modifier.height(8.dp))
-                                    Text("Toca el botón '+' para crear una nueva.", style = MaterialTheme.typography.bodySmall)
+                                    Text(stringResource(R.string.routines_text2_condition), style = MaterialTheme.typography.bodySmall)
                                 }
                             }
 
@@ -226,7 +225,7 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
                                                         onDismissRequest = { expanded = false }
                                                     ) {
                                                         DropdownMenuItem(
-                                                            text = { Text("Eliminar") },
+                                                            text = { Text(stringResource(R.string.routines_text_button_card)) },
                                                             onClick = {
                                                                 expanded = false
                                                                 viewModel.deleteRoutine(routine.id)
@@ -270,15 +269,15 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
                         )
                     }
                 }) {
-                    Text("CREAR")
+                    Text(stringResource(R.string.alertdialog1_text_confirm))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showRoutineTypeDialog.value = false }) {
-                    Text("CANCELAR")
+                    Text(stringResource(R.string.alertdialog1_text_dismiss))
                 }
             },
-            title = { Text("Selecciona tipo de rutina") },
+            title = { Text(stringResource(R.string.alertdialog1_title)) },
             text = {
                 val categories = listOf("Vacía", "Pecho", "Piernas", "Brazos", "Espalda", "Hombros", "Abdomen")
                 Column {
@@ -316,7 +315,7 @@ fun RoutinesScreen(navController: NavController, viewModel: RoutinesViewModel = 
                     Text("OK")
                 }
             },
-            title = { Text("Selecciona una fecha") },
+            title = { Text(stringResource(R.string.alertdialog2_title)) },
             text = {
                 AndroidView(factory = { context ->
                     CalendarView(context).apply {
