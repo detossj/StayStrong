@@ -67,7 +67,6 @@ import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.deto.staystrong.ui.AppViewModelProvider
 import com.deto.staystrong.model.Exercise
-import coil.imageLoader
 import com.deto.staystrong.data.remote.ApiClient.BASE_URL
 import com.deto.staystrong.ui.components.CustomBottomAppBar
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
@@ -138,9 +137,8 @@ fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseV
         if (uiState is ExerciseUiState.Success) {
             uiState.exercises.forEach { exercise ->
                 val request = ImageRequest.Builder(context)
-                    .data("http://192.168.1.91:8000/${exercise.image_path}")
+                    .data(BASE_URL + "/"+ "${exercise.image_path}")
                     .build()
-                //context.imageLoader.enqueue(request) // precarga
 
             }
         }
@@ -157,7 +155,7 @@ fun ExerciseGridScreen(onExerciseClick: (Exercise) -> Unit, viewModel: ExerciseV
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "¿Qué quieres entrenar hoy?",
+                text = stringResource(R.string.exerciseList_title),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
@@ -329,7 +327,7 @@ fun ExpandedMuscleView( navController: NavController, idRoutine: Int, exercise: 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Grupos musculares trabajados:",
+                text = stringResource(R.string.expandedMuscleView_title),
                 fontSize = 18.sp,
                 color = Color.White,
                 fontWeight = FontWeight.SemiBold,
@@ -361,7 +359,7 @@ fun ExpandedMuscleView( navController: NavController, idRoutine: Int, exercise: 
                 )
             ) {
                 Text(
-                    text = "Añadir Ejercicio",
+                    text = stringResource(R.string.expandedMuscleView_button),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
