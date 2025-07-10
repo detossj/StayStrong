@@ -77,6 +77,10 @@
     <string name="alertdialog1_text_dismiss">CANCELAR</string>
     <string name="alertdialog1_title">Selecciona tipo de rutina</string>
     <string name="alertdialog2_title">Selecciona una fecha</string>
+    <string name="routine_text1_condition">No hay ejercicios en esta rutina.</string>
+    <string name="routine_text2_condition">Toca el botón "+" para agregar uno.</string>
+    <string name="set_text_button">Añadir Set</string>
+
 
 
 
