@@ -70,6 +70,14 @@
     <string name="recipes_title">Recetas Fit</string>
     <string name="recipe_text_ingredientes">Ingredientes</string>
     <string name="recipe_text_pasos">Pasos</string>
+    <string name="routines_text1_condition">No hay rutinas para esta fecha.</string>
+    <string name="routines_text2_condition">Toca el botón "+" para crear una nueva.</string>
+    <string name="routines_text_button_card">Eliminar</string>
+    <string name="alertdialog1_text_confirm">CREAR</string>
+    <string name="alertdialog1_text_dismiss">CANCELAR</string>
+    <string name="alertdialog1_title">Selecciona tipo de rutina</string>
+    <string name="alertdialog2_title">Selecciona una fecha</string>
+
 
 
 
