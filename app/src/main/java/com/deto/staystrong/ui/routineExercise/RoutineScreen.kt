@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
@@ -33,7 +34,7 @@ import com.deto.staystrong.ui.components.CustomBottomAppBar
 import com.deto.staystrong.ui.components.CustomCircularProgressIndicator
 import com.deto.staystrong.ui.components.CustomFloatingActionButton
 import com.deto.staystrong.ui.exercise.rememberExerciseImagePainter
-
+import com.deto.staystrong.R
 
 @Composable
 fun RoutineScreen( navController: NavController, idRoutine: Int , formattedDate: String, viewModel: RoutineExerciseViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
@@ -110,12 +111,12 @@ fun RoutineScreen( navController: NavController, idRoutine: Int , formattedDate:
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "No hay ejercicios en esta rutina.", style = MaterialTheme.typography.bodyLarge,
+                                text = stringResource(R.string.routine_text1_condition), style = MaterialTheme.typography.bodyLarge,
                                 color = Color.White
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "Toca el botón '+' para agregar uno.", style = MaterialTheme.typography.bodySmall,
+                                text = stringResource(R.string.routine_text2_condition), style = MaterialTheme.typography.bodySmall,
                                 color = Color.White
                             )
                         }
