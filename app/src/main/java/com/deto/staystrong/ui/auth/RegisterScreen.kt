@@ -8,12 +8,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,7 +39,6 @@ import androidx.navigation.NavController
 import com.deto.staystrong.Home
 import com.deto.staystrong.Login
 import com.deto.staystrong.ui.AppViewModelProvider
-import com.deto.staystrong.ui.components.CustomButtonLoginAndRegister
 import com.deto.staystrong.ui.components.CustomOutlinedTextFieldLoginAndRegister
 
 @Composable
@@ -75,7 +77,7 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel = view
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White.copy(alpha = 0.1f))
+                .background(Color.Black.copy(alpha = 0.1f))
         )
 
         Column(
@@ -142,7 +144,7 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel = view
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            CustomButtonLoginAndRegister(
+            Button(
                 onClick = {
                     errorName = name.isBlank()
                     errorEmail = email.isBlank()
@@ -151,11 +153,18 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel = view
 
                     if (!errorName && !errorEmail && !errorPassword && !errorValidationPassword) {
                         viewModel.register(name,email,password,validationPassword)
-                    }
-
-                },
-                text = R.string.register_button_text
-            )
+                    } },
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color.Black
+                )
+            ){
+                Text(stringResource(R.string.register_button_text), fontWeight = FontWeight.Bold)
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
