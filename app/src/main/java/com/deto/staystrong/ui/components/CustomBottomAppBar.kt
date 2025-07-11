@@ -59,7 +59,7 @@ fun CustomBottomAppBar(navController: NavController) {
                 val items = listOf(
                     Triple(R.drawable.home_24px, stringResource(R.string.customBottomAppBar_inicio), Home::class.qualifiedName to listOf(Home::class.qualifiedName)),
                     Triple(R.drawable.nutrition_24px, stringResource(R.string.customBottomAppBar_recetas), Recipes::class.qualifiedName to listOf(Recipes::class.qualifiedName, Recipe::class.qualifiedName)),
-                    Triple(R.drawable.add_circle_24px, stringResource(R.string.customBottomAppBar_recetas), Routines::class.qualifiedName to listOf(Routines::class.qualifiedName, Routine::class.qualifiedName, ExerciseList::class.qualifiedName, Set::class.qualifiedName)),
+                    Triple(R.drawable.add_circle_24px, stringResource(R.string.customBottomAppBar_entrenar), Routines::class.qualifiedName to listOf(Routines::class.qualifiedName, Routine::class.qualifiedName, ExerciseList::class.qualifiedName, Set::class.qualifiedName)),
                     Triple(R.drawable.show_chart_24px, stringResource(R.string.customBottomAppBar_progreso), Progress::class.qualifiedName to listOf(Progress::class.qualifiedName,Calculator::class.qualifiedName)),
                     Triple(R.drawable.account_circle_24px, stringResource(R.string.customBottomAppBar_tu), Profile::class.qualifiedName to listOf(Profile::class.qualifiedName))
                 )
